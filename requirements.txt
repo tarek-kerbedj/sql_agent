@@ -1,0 +1,7 @@
+langchain==0.0.179
+streamlit==1.24.0
+altair==4.0
+openai
+tiktoken
+chromadb
+
