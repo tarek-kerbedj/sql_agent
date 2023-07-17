@@ -20,7 +20,7 @@ from langchain import OpenAI, SQLDatabase, SQLDatabaseChain
 from langchain.sql_database import SQLDatabase
 
 
-
+st.title('Database Chat')
 
 os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
 #@st.cache_resource
