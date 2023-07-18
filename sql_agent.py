@@ -20,7 +20,7 @@ from langchain import OpenAI, SQLDatabase, SQLDatabaseChain
 from langchain.sql_database import SQLDatabase
 
 
-
+st.title('Database Chat')
 
 os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
 #@st.cache_resource
@@ -34,7 +34,7 @@ db_chain = SQLDatabaseChain.from_llm(ChatOpenAI(temperature=0), db, verbose=True
 #db_chain=load_db()
 
 
-st.write(db_chain.llm_chain.prompt.template)
+#st.write(db_chain.llm_chain.prompt.template)
 if "chat_his" not in st.session_state:
     st.session_state.chat_his=[]
 if "messages" not in st.session_state:
