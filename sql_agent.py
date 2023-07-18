@@ -19,7 +19,9 @@ from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 from langchain import OpenAI, SQLDatabase, SQLDatabaseChain
 from langchain.sql_database import SQLDatabase
 
-
+col1,col2,col3=st.columns([1,1,1])
+with col2:
+    st.image('forward_lane_icon.png')
 st.title('Database Chat')
 
 os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
