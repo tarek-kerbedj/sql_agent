@@ -3,7 +3,7 @@ import json
 from time import perf_counter
 import pandas as pd
 import streamlit as st
-
+import streamlit.components.v1 as components
 from langchain.agents import create_pandas_dataframe_agent
 from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
@@ -21,18 +21,9 @@ from langchain import OpenAI, SQLDatabase, SQLDatabaseChain
 from langchain.sql_database import SQLDatabase
 import base64
 from pathlib import Path
-from style import load_bootstrap
-
-
-
-load_bootstrap()
 
 
 col1,col2,col3=st.columns([1,1,1])
-
-
-
-
 
 def img_to_bytes(img_path):
     img_bytes = Path(img_path).read_bytes()
@@ -48,6 +39,7 @@ with col2:
     st.markdown(img_to_html('forward_lane_icon.png'), unsafe_allow_html=True)
 st.title('Database Chat')
 
+
 os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
 _DEFAULT_TEMPLATE ="""You are a SQLite expert. Given an input question, first create a syntactically correct SQLite query to run, then look at the results of the query and return the answer to the input question. Unless the user specifies in the question a specific number of examples to obtain, query for at most 5 results using the LIMIT clause as per SQLite. You can order the results to return the most informative data in the database. Never query for all columns from a table. You must query only the columns that are needed to answer the question. Wrap each column name in double quotes (") to denote them as delimited identifiers. Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table. Pay attention to use date('now') function to get the current date, if the question involves "today".
 if the user asks for a tabular format , return the final output as an HTML table
@@ -62,12 +54,12 @@ Question: {input}"""
 PROMPT = PromptTemplate(
     input_variables=["input", "table_info"], template=_DEFAULT_TEMPLATE
 )
-@st.cache_resource
-def load_db():
-    db=SQLDatabase.from_uri("sqlite:///master_mock_up.db")
-    db_chain = SQLDatabaseChain.from_llm(ChatOpenAI(temperature=0), db, verbose=True,prompt=PROMPT)
-    return db_chain
-db_chain=load_db()
+#@st.cache_resource
+#def load_db():
+db=SQLDatabase.from_uri("sqlite:///master_mock_up.db")
+db_chain = SQLDatabaseChain.from_llm(ChatOpenAI(temperature=0), db, verbose=True,prompt=PROMPT)
+#return db_chain
+#db_chain=load_db()
 
     
 
@@ -171,12 +163,12 @@ if prompt := st.chat_input("What would you like to know about this document?"):
                 #rail_guard=ChatOpenAI(temperature=0)
                 #rail_guard.predict(f' {prompt}')
 
-                full_response=db_chain.run(f'{prompt}').replace('Final answer here:',"")
-           
+                full_response=db_chain.run(f'{prompt}')
+                full_response=full_response.replace('Final answer here:',"")
             except:
                 full_response="Sorry this question is not related to the data ,could you please ask a question specific to the database\n "
             st.markdown(full_response,unsafe_allow_html=True)
-      
+        
             t2=perf_counter()
             print(f"total time taken: {t2-t1}")
             print(f"Total Tokens: {cb.total_tokens}")
