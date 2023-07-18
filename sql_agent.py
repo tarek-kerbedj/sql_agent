@@ -171,8 +171,8 @@ if prompt := st.chat_input("What would you like to know about this document?"):
                 #rail_guard=ChatOpenAI(temperature=0)
                 #rail_guard.predict(f' {prompt}')
 
-                full_response=db_chain.run(f'{prompt}')
-                full_response=full_response.replace('Final answer here:',"")
+                full_response=db_chain.run(f'{prompt}').replace('Final answer here:',"")
+           
             except:
                 full_response="Sorry this question is not related to the data ,could you please ask a question specific to the database\n "
             st.markdown(full_response,unsafe_allow_html=True)
