@@ -2,7 +2,6 @@ from fpdf import FPDF
 import streamlit as st
 import zipfile
 import io
-from docx import Document
 from core_funcs import generate_summary
 
 
