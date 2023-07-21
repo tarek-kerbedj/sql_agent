@@ -59,7 +59,7 @@ def show_messages(messages):
                 st.markdown(message["content"],unsafe_allow_html=True)
             
             else:
-                pass
+                st.plotly_chart(message['content'], use_container_width=True)
 def calculate_price(cb):
             print(f"Total Tokens: {cb.total_tokens}")
             print(f"Prompt Tokens: {cb.prompt_tokens}")
