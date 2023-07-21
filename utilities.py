@@ -42,7 +42,7 @@ def load_db(PROMPT,uri):
     Returns:
     SQLDatabaseChain: A SQLDatabaseChain instance connected to the specified database."""
     db=SQLDatabase.from_uri(uri)
-    db_chain = SQLDatabaseChain.from_llm(ChatOpenAI(temperature=0), db, verbose=True,prompt=PROMPT)
+    db_chain = SQLDatabaseChain.from_llm(ChatOpenAI(temperature=0), db, verbose=True,prompt=PROMPT,return_intermediate_steps=True)
     return db_chain
 def show_messages(messages):
     """

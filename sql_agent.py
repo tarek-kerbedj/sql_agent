@@ -10,6 +10,8 @@ from langchain.chat_models import ChatOpenAI
 import plotly.graph_objects as go
 from plotly.graph_objs import Figure
 from vis_funcs import *
+from style import *
+from utilities import *
 from langchain.prompts.prompt import PromptTemplate
 from langchain.agents.agent_types import AgentType
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
@@ -17,7 +19,7 @@ from langchain.agents import create_sql_agent
 from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 from langchain import OpenAI, SQLDatabase, SQLDatabaseChain
 from langchain.sql_database import SQLDatabase
-
+os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
 # renders the title and logo
 header("forward_lane_icon.png","Database Chat")
 
@@ -41,12 +43,12 @@ PROMPT = PromptTemplate(
     input_variables=["input", "table_info"], template=_DEFAULT_TEMPLATE
 )
 
-URI=st.text_input('Insert URI')
+URI=st.text_input('Insert URI',value="transactional_data_v4.db")
 if URI:
 
     db_chain=load_db(PROMPT,f"sqlite:///{URI}")
     # print out the default prompt
-    st.write(db_chain.llm_chain.prompt.template)
+    #st.write(db_chain.llm_chain.prompt.template)
     # save messages and chat history session state
     if "chat_his" not in st.session_state:
         st.session_state.chat_his=[]
@@ -90,7 +92,7 @@ if URI:
     }
                     intermediate=db_chain(f'{prompt}')
                     full_response=intermediate["intermediate_steps"]
-                    st.write(full_response)
+                    #st.write(full_response)
                     #st.write(full_response[3])
                     #st.write(intermediate["intermediate_steps"][2])
 
@@ -114,7 +116,7 @@ if URI:
                     
 
                 # use markdown to be able to display html 
-                st.markdown(full_response,unsafe_allow_html=True)
+                #st.markdown(full_response,unsafe_allow_html=True)
             
                 t2=perf_counter()
                 # call this function to show the price using the callback handler

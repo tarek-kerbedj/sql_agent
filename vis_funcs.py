@@ -79,7 +79,7 @@ def chat2plot_plot(df,input_string):
 
 # When giving tools to LLM, we must pass as list of tools
 #tools = [chat2plot_tool]
-llm=ChatOpenAI(temperature=0)
+
 
 # agent = create_pandas_dataframe_agent(
 #     OpenAI(temperature=0),
