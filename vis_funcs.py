@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 
 from langchain.sql_database import SQLDatabase
 from langchain.agents.agent_toolkits import SQLDatabaseToolkit
-from chat2plot import chat2plot
+
 import pandas as pd
 import json
 # Initialize the chat2plot tool
@@ -47,15 +47,15 @@ def preprocess_visuals(full_response):
             fig.update_layout(title_text=title)
             return fig
 
-def chat2plot_plot(df,input_string):
+# def chat2plot_plot(df,input_string):
 
-    # Assuming df is globally defined or passed somehow
-    # Pass a dataframe to draw
-    c2p = chat2plot(df,description_strategy="dtypes")
+#     # Assuming df is globally defined or passed somehow
+#     # Pass a dataframe to draw
+#     c2p = chat2plot(df,description_strategy="dtypes")
     
-    # Make a question about the data
-    result = c2p(input_string)
-    return result
+#     # Make a question about the data
+#     result = c2p(input_string)
+#     return result
     # if isinstance(result.figure, Figure):
     #     return st.plotly_chart(result.figure, use_container_width=True)
     # else:
