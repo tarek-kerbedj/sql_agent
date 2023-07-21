@@ -7,4 +7,4 @@ fpdf==1.7.2
 pypdf==3.9.0
 openai
 tiktoken
-chromadb
+chromadb==0.3.20
