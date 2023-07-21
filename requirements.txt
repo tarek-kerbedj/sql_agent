@@ -1,6 +1,7 @@
 langchain==0.0.231
 streamlit==1.24.0
 altair==4.0
+plotly==5.7.0
 openai
 tiktoken
 chromadb
