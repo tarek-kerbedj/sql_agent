@@ -2,6 +2,9 @@ langchain==0.0.231
 streamlit==1.24.0
 altair==4.0
 plotly==5.7.0
+docx2txt==0.8
+fpdf==1.7.2
+pypdf==3.9.0
 openai
 tiktoken
 chromadb
