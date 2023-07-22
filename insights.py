@@ -34,28 +34,6 @@ header("forward_lane_icon.png","Insights")
 files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt'])
 if files !=[]:
     st.session_state.uploaded_files=files
-#if the user asks about an explanation or reasoning related to opportunities , query the columns related to that as well
-#dont use the client_breakdown table unless the user asks about a certain client.
-
-# Wrap each column name in double quotes (") to denote them as delimited identifiers.
-_DEFAULT_TEMPLATE ="""You are a SQLite expert. Given an input question, first create a syntactically correct SQLite query to run, then look at the results of the query and return the answer to the input question. Unless the user specifies in the question a specific number of examples to obtain,query for at most 5 results using the LIMIT clause as per SQLite. You can order the results to return the most informative data in the database.Never query for all columns from a table.Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table. Pay attention to use date('now') function to get the current date, if the question involves "today".
-
-if the user asks for a tabular format , return the final output as an HTML table.
-if the output includes multiple items , return it in a  bulletpoint format.
-if the user asks about reasoning or an explanation behind choosing an an opportunity or a risk , check the description field for his signals
-Use the following format:
-
-Question: Question here 
-SQLQuery: SQL Query to run 
-SQLResult: Result of the SQLQuery 
-Answer: Final answer here
-
-Only use the following tables: {table_info}
-
-Question: {input}"""
-PROMPT = PromptTemplate(
-    input_variables=["input", "table_info"], template=_DEFAULT_TEMPLATE
-)
 
 URI=st.text_input('Insert URI',value="master_mock_up.db")
 if URI:

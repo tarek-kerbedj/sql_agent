@@ -8,3 +8,4 @@ pypdf==3.9.0
 openai
 tiktoken
 chromadb==0.3.20
+psycopg2==2.9.6
