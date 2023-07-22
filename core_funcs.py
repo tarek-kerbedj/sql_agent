@@ -31,9 +31,10 @@ def generate_summary(files):
     for f in parsed_files:
 
         summary=map_reduce.run(text_to_docs(f))
-        st.write(summary)
+        #st.write(summary)
 
         st.session_state.summaries.append(summary)
+    return st.session_state.summaries
                                           
     #summary_chain.run(docs)
     
