@@ -67,11 +67,11 @@ def  create_embs(parsed_files):
    
     # create the vectorstore
     
-    vectordb = Chroma.from_documents(docs, embeddings, collection_name="collection",persist_directory=f"index/{st.session_state.file_name}")
+    vectordb = Chroma.from_documents(docs, embeddings, collection_name="collection")
 
     return vectordb
 
-def generate_answer(files):
+def generate_answer(prompt,files):
     """ this function will handle parsing the document , turning it into embeddings and the query
          Parameters:
                 parsed_files (list of lists): represents a list of the parsed documents
@@ -79,9 +79,9 @@ def generate_answer(files):
             Returns:
                     None"""
     # Takes user input
-    user_query = st.session_state.input_text
+    user_query = prompt
     # clear the text box
-    st.session_state.input_text=""
+
 
     # if the user query is empty return a warning 
     if user_query.strip()=='':
@@ -89,47 +89,47 @@ def generate_answer(files):
         return
  
        
-    with st.spinner("Indexing document... This may take a while⏳"):
+    #with st.spinner("Indexing document... This may take a while⏳"):
         # parsing the uploaded files
-        try:
-            parsed_files=[parse_uploaded_file(f)for f in files]
-            #
-            #file_names=
-            # mash the file names into one string
-            file_names_string="".join([f.name for f in files])
-            # make sure its in unicode
-            encoded_string = file_names_string.encode('utf-8')
-            # create a hash object
-            hash_object=hashlib.blake2s()
-            # pass the string 
-            hash_object.update(encoded_string)
-            hashed_string = hash_object.hexdigest()
-            #save the hash as file name
-            st.session_state.file_name=hashed_string
+    try:
+        parsed_files=[parse_uploaded_file(f)for f in files]
+        #
+        #file_names=
+        # mash the file names into one string
+        #file_names_string="".join([f.name for f in files])
+        # make sure its in unicode
+        #encoded_string = file_names_string.encode('utf-8')
+        # create a hash object
+        #hash_object=hashlib.blake2s()
+        # pass the string 
+        #hash_object.update(encoded_string)
+        #hashed_string = hash_object.hexdigest()
+        #save the hash as file name
+        #st.session_state.file_name=hashed_string
 
-          
-        except:
-            st.error('Error parsing the file')
+        
+    except:
+        st.error('Error parsing the file')
 
-        vectordb=create_embs(parsed_files)
-        try:
-     
-            
-            # generate the answer
-            pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}))
-            answer = pdfqa({"question": user_query,"chat_history":st.session_state.chat_his})
+    vectordb=create_embs(parsed_files)
+    try:
+    
+        
+        # generate the answer
+        pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}),max_tokens_limit=4097)
+        answer = pdfqa({"question": user_query,"chat_history":st.session_state.chat_his})
 
-        # if that fails , use the number of vectors provided in the error message
-        except NotEnoughElementsException as exc:
-            error_message=str(exc)
-            pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": int(error_message[-1])}))
+    # if that fails , use the number of vectors provided in the error message
+    except NotEnoughElementsException as exc:
+
+        error_message=str(exc)
+        pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": int(error_message[-1])}),max_tokens_limit=4097)
            
-            answer = pdfqa({"question": user_query,"chat_history":st.session_state.chat_his})
-
-
+        #
+    return answer['answer']
     # save the exchanged messages
 
-    st.session_state.history.append({"message": user_query, "is_user": True})
-    st.session_state.history.append({"message": answer['answer'], "is_user": False})
-    st.session_state.chat_his.append((user_query,answer['answer']))
+    #st.session_state.history.append({"message": user_query, "is_user": True})
+    #st.session_state.history.append({"message": answer['answer'], "is_user": False})
+    #st.session_state.chat_his.append((user_query,answer['answer']))
  

@@ -35,15 +35,12 @@ def preprocess_visuals(full_response):
         fig.add_trace(go.Bar(x=x_values, y=y_values))
         fig.update_layout(title_text=title)
         return fig
-        #st.plotly_chart(fig ,use_container_width=True)
     elif chart_type == 'line':
             fig.add_trace(go.Scatter(x=x_values, y=y_values, mode='lines'))
             fig.update_layout(title_text=title)
             return fig
-            #st.plotly_chart(fig, use_container_width=True)
     elif chart_type == 'pie':
-            #fig.add_trace(go.Figure(data=[go.Pie(labels=y_values, values=x_values)]))
-            fig.add_trace(go.Pie(labels=x_values,values=x_values))
+            fig.add_trace(go.Pie(labels=y_values,values=x_values))
             fig.update_layout(title_text=title)
             return fig
 
