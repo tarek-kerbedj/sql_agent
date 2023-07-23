@@ -4,7 +4,7 @@ from langchain.vectorstores import Chroma
 from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
 from langchain.chains import ConversationalRetrievalChain
-from chromadb.errors import NotEnoughElementsException
+
 import streamlit as st
 import hashlib
 from util_funcs import text_to_docs,parse_uploaded_file
