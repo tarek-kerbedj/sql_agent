@@ -7,5 +7,5 @@ fpdf==1.7.2
 pypdf==3.9.0
 openai
 tiktoken
-chromadb==0.3.20
+chromadb==0.4.2
 psycopg2-binary
