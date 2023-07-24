@@ -114,7 +114,7 @@ if URI:
                         st.plotly_chart(full_response, use_container_width=True)
                     else:
                         if check_for_keywords(prompt,"emails"):
-                            infos='\n'.join(st.session_state.info[[-2:])
+                            infos='\n'.join(st.session_state.info[-2:])
                             full_response=resp.predict(f"given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the next best action links.")
                             st.markdown(full_response)
 
