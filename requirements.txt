@@ -1,4 +1,4 @@
-langchain==0.0.137
+langchain==0.0.231
 streamlit==1.24.0
 altair==4.0
 plotly==5.7.0
@@ -7,5 +7,5 @@ fpdf==1.7.2
 pypdf==3.9.0
 openai
 tiktoken
-chromadb==0.3.20
+chromadb==0.3.29
 psycopg2-binary
