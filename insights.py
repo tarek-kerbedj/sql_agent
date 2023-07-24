@@ -114,7 +114,7 @@ if URI:
                         st.plotly_chart(full_response, use_container_width=True)
                     else:
                         if check_for_keywords(prompt,"emails"):
-                            infos='\n'.join(st.session_state.info)
+                            infos='\n'.join(st.session_state.info[[-2:])
                             full_response=resp.predict(f"given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the next best action links.")
                             st.markdown(full_response)
 
@@ -123,6 +123,7 @@ if URI:
                             try:
                                     full_response=db_chain(f'{prompt}')['result']
                                     full_response=clean_answer(full_response)
+                                    st.session_state['info'].append(full_response)
                                     st.markdown(full_response,unsafe_allow_html=True)
                             except:
                                 full_response="Sorry this question is not related to the data ,could you please ask a question specific to the database\n "
