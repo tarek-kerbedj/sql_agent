@@ -83,7 +83,9 @@ def clean_answer(full_response):
         The cleaned and sanitized version of the input full_response string.
     """
     full_response=full_response.replace('"',"'")
-    full_response=full_response.replace('Final answer here',"")
+    pattern = r'Final answer(:? here)?'
+    full_response = re.sub(pattern, "", full_response)
+    #full_response=full_response.replace('Final answer here',"")
     #full_response=full_response.replace(':'," ")
     full_response=full_response.replace("'","")
     return full_response
