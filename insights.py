@@ -19,7 +19,8 @@ from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 from langchain import OpenAI, SQLDatabase, SQLDatabaseChain
 
 
-
+if "info" not in st.session_state:
+    st.session_state['info']=[]
 if "source" not in st.session_state:
     st.session_state['source']="Database"
 if "file_names" not in st.session_state:
@@ -70,7 +71,7 @@ if URI:
                     st_callback = StreamlitCallbackHandler(st.container())
                     t1=perf_counter()
                     resp=ChatOpenAI(temperature=0)
-                    if check_for_visuals(prompt)==True:
+                    if check_for_keywords(prompt,"visuals"):
                        
                         #choice=resp.predict(f"is the user query asking for a data visualization task ?,some examples of data visualization tasks are : using verbs like show ,visualize and plot \n  answer with either yes or a no , here is the query :{prompt}")
                         #if choice.lower() in ["yes","yes."]:
@@ -112,14 +113,20 @@ if URI:
                         full_response=preprocess_visuals(full_response)
                         st.plotly_chart(full_response, use_container_width=True)
                     else:
-                        
-                        try:
-                                full_response=db_chain(f'{prompt}')['result']
-                                full_response=clean_answer(full_response)
-                                st.markdown(full_response,unsafe_allow_html=True)
-                        except:
-                            full_response="Sorry this question is not related to the data ,could you please ask a question specific to the database\n "
-                 
+                        if check_for_keywords(prompt,"emails"):
+                            infos='\n'.join(st.session_state.info)
+                            full_response=resp.predict(f"given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the next best action links.")
+                            st.markdown(full_response)
+
+                        else:
+
+                            try:
+                                    full_response=db_chain(f'{prompt}')['result']
+                                    full_response=clean_answer(full_response)
+                                    st.markdown(full_response,unsafe_allow_html=True)
+                            except:
+                                full_response="Sorry this question is not related to the data ,could you please ask a question specific to the database\n "
+                    
 
 
                     # use markdown to be able to display html 
@@ -142,7 +149,7 @@ if URI:
             with st.chat_message("assistant"):
                 message_placeholder = st.empty()
                 full_response = "" 
-                if check_for_summary(prompt)==False:
+                if check_for_keywords(prompt,"summary")==False:
 
 
                     full_response=generate_answer(prompt,st.session_state.uploaded_files)

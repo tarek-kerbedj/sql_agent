@@ -11,7 +11,8 @@ _DEFAULT_TEMPLATE ="""You are a SQLite expert. Given an input question, first cr
 
 if the user asks for a tabular format , return the final output as an HTML table.
 if the output includes multiple items , return it in a  bulletpoint format.
-if the user asks about reasoning or an explanation behind choosing an an opportunity or a risk , check the description field for his signals
+if the user asks about reasoning or an explanation behind choosing an an opportunity or a risk , check the description field for his signals.
+if the user asks about the next best action (NBA) for a client , include the links for it.
 Use the following format:
 
 Question: Question here 
@@ -25,7 +26,21 @@ Question: {input}"""
 PROMPT = PromptTemplate(
     input_variables=["input", "table_info"], template=_DEFAULT_TEMPLATE
 )
+def check_for_keywords(text,flag):
+    if flag=="summary":
+        pattern = r'\b(summary|summarize|summarization|summarize[sd]|summarizing)\b'
+       
+    elif flag=='visuals':
+        pattern = r'\b(Plot|visualize|visualization|Draw|Graph[s]|Chart[s]|Line plot|Bar chart|Pie chart)\b'
+     
+    elif flag=="emails":
+        pattern=r'\b(email)\b'
 
+    match = re.search(pattern, text, re.IGNORECASE)
+    if match:
+        return True
+    else:
+        return False
 def check_for_visuals(text):
     # Regular expression pattern to match words related to "summary"
     pattern = r'\b(Plot|visualize|visualization|Draw|Graph[s]|Chart[s]|Line plot|Bar chart|Pie chart)\b'
