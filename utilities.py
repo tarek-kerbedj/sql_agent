@@ -84,7 +84,8 @@ def clean_answer(full_response):
     """
     full_response=full_response.replace('"',"'")
     full_response=full_response.replace('Final answer here',"")
-    full_response=full_response.replace(':'," ")
+    #full_response=full_response.replace(':'," ")
+    full_response=full_response.replace("'","")
     return full_response
 @st.cache_resource()
 def load_db(uri):
