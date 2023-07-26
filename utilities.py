@@ -117,7 +117,7 @@ def show_messages(messages):
                         message content to be displayed."""
     for message in messages:
         if message['role']=='user':
-            icon='human.png'
+            icon='https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png'
         else:
             icon="Forwardlane chat.PNG"
 

@@ -62,7 +62,7 @@ if URI:
         
         if prompt := st.chat_input("How many clients are there?"):
             st.session_state.messages.append({"role": "user", "content": prompt})
-            with st.chat_message("user",avatar='human.png'):
+            with st.chat_message("user",avatar='https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png'):
                 st.markdown(prompt)
             with st.chat_message("assistant",avatar='Forwardlane chat.PNG'):
                 message_placeholder = st.empty()
