@@ -55,15 +55,16 @@ if URI:
      
         if "messages" not in st.session_state:
             st.session_state['messages']=[]
+            st.session_state.messages.append({"role": "assistant", "content": "Hello , how i may i help you today ?"})
 
         show_messages(st.session_state.messages)
             
         
-        if prompt := st.chat_input("What would you like to know about this Database?"):
+        if prompt := st.chat_input("How many clients are there?"):
             st.session_state.messages.append({"role": "user", "content": prompt})
-            with st.chat_message("user"):
+            with st.chat_message("user",avatar='human.png'):
                 st.markdown(prompt)
-            with st.chat_message("assistant"):
+            with st.chat_message("assistant",avatar='Forwardlane chat.PNG'):
                 message_placeholder = st.empty()
                 full_response = ""
                 
