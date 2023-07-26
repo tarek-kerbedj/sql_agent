@@ -32,7 +32,7 @@ if "summaries" not in st.session_state:
 os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
 # renders the title and logo
 header("forward_lane_icon.png","Insights")
-files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt'])
+files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','xlsx'])
 
 if files !=[]:
     if "chat_his" not in st.session_state:
@@ -40,7 +40,7 @@ if files !=[]:
     if "messages" not in st.session_state:
         st.session_state['messages']=[]
     st.session_state.uploaded_files=files
-    source=st.sidebar.radio('choose a source',['Database','Document(s)'])
+    source=st.sidebar.radio('choose a source',['Database','Document(s)','Sheet'])
     if source:
         st.session_state['source']=source
 
@@ -55,7 +55,7 @@ if URI:
      
         if "messages" not in st.session_state:
             st.session_state['messages']=[]
-            st.session_state.messages.append({"role": "assistant", "content": "Hello , how i may i help you today ?"})
+            st.session_state.messages.append({"role": "assistant", "content": "Hello , how  may i help you today ?"})
 
         show_messages(st.session_state.messages)
             
@@ -142,7 +142,7 @@ if URI:
             #st.session_state.chat_his.append((prompt,full_response))
             
             st.session_state.messages.append({"role": "assistant", "content": full_response})
-    else:
+    elif st.session_state['source']=="Document(s)":
         show_messages(st.session_state.messages)
         st.session_state.uploaded_files=files
         if prompt := st.chat_input("What would you like to know about this document?"):
@@ -191,6 +191,23 @@ if URI:
                             mime='application/pdf',help="download summary in a PDF Format ",
                             )
                     
+                st.session_state.messages.append({"role": "assistant", "content": full_response})
+    elif st.session_state['source']=="Sheet":
+        show_messages(st.session_state.messages)
+        st.session_state.uploaded_files=files
+        df = pd.read_excel(st.session_state['uploaded_files'][0],header=None)
+        if prompt := st.chat_input("What would you like to know about this document?"):
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with st.chat_message("user",avatar='https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png'):
+                st.markdown(prompt)
+            with st.chat_message("assistant",avatar='Forwardlane chat.PNG'):
+                message_placeholder = st.empty()
+                full_response = "" 
+                if check_for_keywords(prompt,"Signals")==False:
+                    signals="\n\n".join(df[0])
+            
+                    full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you geenerate a few more in the same format , without any explanations')
+                    st.markdown(full_response)
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
 
 

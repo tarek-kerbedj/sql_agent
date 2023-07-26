@@ -35,6 +35,8 @@ def check_for_keywords(text,flag):
      
     elif flag=="emails":
         pattern=r'\b(email)\b'
+    elif flag=='Signals':
+        pattern=r"b(signal|signal[s])\b"
 
     match = re.search(pattern, text, re.IGNORECASE)
     if match:
