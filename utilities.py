@@ -116,8 +116,12 @@ def show_messages(messages):
                         'role' is used to set the role of the chat message and 'content' is the actual 
                         message content to be displayed."""
     for message in messages:
+        if message['role']=='user':
+            icon='human.png'
+        else:
+            icon="Forwardlane chat.PNG"
 
-        with st.chat_message(message["role"]):
+        with st.chat_message(message["role"],avatar=icon):
             if type(message['content'])==str:
                 st.markdown(message["content"],unsafe_allow_html=True)
             
