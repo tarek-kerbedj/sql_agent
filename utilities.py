@@ -43,28 +43,7 @@ def check_for_keywords(text,flag):
         return True
     else:
         return False
-def check_for_visuals(text):
-    # Regular expression pattern to match words related to "summary"
-    pattern = r'\b(Plot|visualize|visualization|Draw|Graph[s]|Chart[s]|Line plot|Bar chart|Pie chart)\b'
-    
-    # Search for the pattern in the input text
-    match = re.search(pattern, text, re.IGNORECASE)
-    
-    if match:
-        return True
-    else:
-        return False
-def check_for_summary(text):
-    # Regular expression pattern to match words related to "summary"
-    pattern = r'\b(summary|summarize|summarization|summarize[sd]|summarizing)\b'
-    
-    # Search for the pattern in the input text
-    match = re.search(pattern, text, re.IGNORECASE)
-    
-    if match:
-        return True
-    else:
-        return False
+
 def clean_answer(full_response):
     """Clean and sanitize the LLM response.
 
