@@ -18,7 +18,7 @@ from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 
 from langchain import OpenAI, SQLDatabase, SQLDatabaseChain
 
-
+resp=ChatOpenAI(temperature=0)
 if "info" not in st.session_state:
     st.session_state['info']=[]
 if "source" not in st.session_state:
@@ -71,7 +71,7 @@ if URI:
                 with get_openai_callback() as cb:
                     st_callback = StreamlitCallbackHandler(st.container())
                     t1=perf_counter()
-                    resp=ChatOpenAI(temperature=0)
+        
                     if check_for_keywords(prompt,"visuals"):
                        
                         #choice=resp.predict(f"is the user query asking for a data visualization task ?,some examples of data visualization tasks are : using verbs like show ,visualize and plot \n  answer with either yes or a no , here is the query :{prompt}")
