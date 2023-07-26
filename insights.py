@@ -200,13 +200,13 @@ if URI:
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user",avatar='https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png'):
                 st.markdown(prompt)
-            with st.chat_message("assistant",avatar='Forwardlane chat.PNG'):
+            with st.chat_message("assistant",avatar='https://i.ibb.co/23kfBNr/Forwardlane-chat.png'):
                 message_placeholder = st.empty()
                 full_response = "" 
                 if check_for_keywords(prompt,"Signals")==False:
                     signals="\n\n".join(df[0])
             
-                    full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you geenerate a few more in the same format , without any explanations')
+                    full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                     st.markdown(full_response)
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
 
