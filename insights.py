@@ -15,7 +15,6 @@ from core_funcs import  *
 from util_funcs_summary import summary_download
 from langchain.prompts.prompt import PromptTemplate
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
-
 from langchain import OpenAI, SQLDatabase, SQLDatabaseChain
 
 resp=ChatOpenAI(temperature=0)
@@ -56,9 +55,7 @@ if URI:
         if "messages" not in st.session_state:
             st.session_state['messages']=[]
             st.session_state.messages.append({"role": "assistant", "content": "Hello , how  may i help you today ?"})
-
-        show_messages(st.session_state.messages)
-            
+        show_messages(st.session_state.messages)   
         
         if prompt := st.chat_input("How many clients are there?"):
             st.session_state.messages.append({"role": "user", "content": prompt})
@@ -70,12 +67,10 @@ if URI:
                 
                 with get_openai_callback() as cb:
                     st_callback = StreamlitCallbackHandler(st.container())
-                    t1=perf_counter()
         
                     if check_for_keywords(prompt,"visuals"):
                        
                         #choice=resp.predict(f"is the user query asking for a data visualization task ?,some examples of data visualization tasks are : using verbs like show ,visualize and plot \n  answer with either yes or a no , here is the query :{prompt}")
-                        #if choice.lower() in ["yes","yes."]:
                         example={'data': [
                 {
                     'x': [
@@ -96,10 +91,7 @@ if URI:
         }
                         intermediate=db_chain(f'{prompt}')
                         full_response=intermediate["intermediate_steps"]
-                        #print(full_response)
-                        #st.write(intermediate)
-                      
-
+        
                         intermediate=(intermediate["intermediate_steps"][0]['input'])
                         #st.write(intermediate)
                         #print(intermediate)
@@ -130,12 +122,9 @@ if URI:
                             except:
                                 full_response="Sorry this question is not related to the data ,could you please ask a question specific to the database\n "
                     
-
-
                     # use markdown to be able to display html 
                     #st.markdown(full_response,unsafe_allow_html=True)
-                
-                    t2=perf_counter()
+            
                     # call this function to show the price using the callback handler
                     calculate_price(cb)
                 
@@ -153,7 +142,6 @@ if URI:
                 message_placeholder = st.empty()
                 full_response = "" 
                 if check_for_keywords(prompt,"summary")==False:
-
 
                     full_response=generate_answer(prompt,st.session_state.uploaded_files)
                     st.session_state.chat_his.append((prompt,full_response))
@@ -209,7 +197,4 @@ if URI:
                     full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                     st.markdown(full_response)
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
-
-
-
 
