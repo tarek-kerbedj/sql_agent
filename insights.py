@@ -64,7 +64,7 @@ if URI:
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user",avatar='https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png'):
                 st.markdown(prompt)
-            with st.chat_message("assistant",avatar='Forwardlane chat.PNG'):
+            with st.chat_message("assistant",avatar='https://i.ibb.co/23kfBNr/Forwardlane-chat.png'):
                 message_placeholder = st.empty()
                 full_response = ""
                 
@@ -147,9 +147,9 @@ if URI:
         st.session_state.uploaded_files=files
         if prompt := st.chat_input("What would you like to know about this document?"):
             st.session_state.messages.append({"role": "user", "content": prompt})
-            with st.chat_message("user"):
+            with st.chat_message("user",avatar="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png"):
                 st.markdown(prompt)
-            with st.chat_message("assistant"):
+            with st.chat_message("assistant",avatar="https://i.ibb.co/23kfBNr/Forwardlane-chat.png"):
                 message_placeholder = st.empty()
                 full_response = "" 
                 if check_for_keywords(prompt,"summary")==False:

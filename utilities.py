@@ -119,7 +119,7 @@ def show_messages(messages):
         if message['role']=='user':
             icon='https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png'
         else:
-            icon="Forwardlane chat.PNG"
+            icon="https://i.ibb.co/23kfBNr/Forwardlane-chat.png"
 
         with st.chat_message(message["role"],avatar=icon):
             if type(message['content'])==str:
