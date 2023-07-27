@@ -35,14 +35,14 @@ if files !=[]:
     if "messages" not in st.session_state:
         st.session_state['messages']=[]
     st.session_state.uploaded_files=files
-    source=st.sidebar.radio('choose a source',['Database','Document(s)','Sheet'])
+    source=st.sidebar.radio('choose a source',['Database Insights','Document Q&A','Signal Generator'])
     if source:
         st.session_state['source']=source
 
 
 URI=st.text_input('Insert URI',value="master_mock_up.db")
 if URI:
-    if st.session_state.source=="Database":
+    if st.session_state.source=="Database Insights":
         db_chain=load_db(f"sqlite:///{URI}")
         # print out the default prompt
         #st.write(db_chain.llm_chain.prompt.template)
@@ -121,7 +121,7 @@ if URI:
         
             
             st.session_state.messages.append({"role": "assistant", "content": full_response})
-    elif st.session_state['source']=="Document(s)":
+    elif st.session_state['source']=="Document Q&A":
         show_messages(st.session_state.messages)
         st.session_state.uploaded_files=files
         if prompt := st.chat_input("What would you like to know about this document?"):
@@ -170,7 +170,7 @@ if URI:
                             )
                     
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
-    elif st.session_state['source']=="Sheet":
+    elif st.session_state['source']=="Signal Generator":
         show_messages(st.session_state.messages)
         st.session_state.uploaded_files=files
         df = pd.read_excel(st.session_state['uploaded_files'][0],header=None)
