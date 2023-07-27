@@ -9,7 +9,7 @@ from fpdf import FPDF
 import streamlit as st
 import zipfile
 import io
-from core_funcs import generate_summary
+
 
 def create_zip(pdf_contents, file_names):
     """ this function creates a zip that contains PDFS
