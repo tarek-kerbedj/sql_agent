@@ -116,7 +116,17 @@ def clean_answer(full_response):
     #full_response=full_response.replace('Final answer here',"")
     #full_response=full_response.replace(':'," ")
     full_response=full_response.replace("'","")
-    return full_response
+    if re.search(r'logic|reasoning',full_response):
+   
+        sentences=re.split(r'\.(?![\d,])',full_response.strip())
+
+        # print(sentences)
+        bullet_list = ["- " + sentence.strip() for sentence in sentences[:-1] if sentence.strip()]
+        result="\n".join(bullet_list)
+        return result
+    else:
+        return full_response
+
 @st.cache_resource()
 def load_db(uri):
     """
