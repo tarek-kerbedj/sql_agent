@@ -9,8 +9,8 @@ from plotly.graph_objs import Figure
 from style import *
 from utilities import *
 from core_funcs import  *
-from util_funcs import *
-#from util_funcs_summary import summary_download
+#from util_funcs import *
+from util_funcs import summary_download
 from langchain.prompts.prompt import PromptTemplate
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 from langchain import OpenAI, SQLDatabase, SQLDatabaseChain
@@ -189,4 +189,3 @@ if URI:
                     full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                     st.markdown(full_response)
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
-
