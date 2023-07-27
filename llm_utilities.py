@@ -1,16 +1,30 @@
-from langchain.sql_database import SQLDatabase
-from langchain.chat_models import ChatOpenAI
-from langchain import OpenAI, SQLDatabase, SQLDatabaseChain
-import streamlit as st
+import json
 import re
 import os
+from langchain.sql_database import SQLDatabase
+from langchain.chat_models import ChatOpenAI
+from langchain import SQLDatabaseChain
+import streamlit as st
+
 os.environ["DB_STRING"]=st.secrets.DB_STRING
 
 from langchain.prompts.prompt import PromptTemplate
 from plotly.graph_objs import Figure
 import plotly.graph_objects as go
-import json
+
 def preprocess_visuals(full_response):
+    """takes a string representation of a json that contains a plotly chart and returns a plotly figure object
+        Parameters:
+    -----------
+    full_response : str
+        The input string containing the full response that needs to parsed and turned into a json.
+
+    Returns:
+    --------
+        fig : plotly.graph_objects
+        a plotly figure
+    """
+    
     data_dict = json.loads(full_response)
     title=data_dict['layout']['title']
  

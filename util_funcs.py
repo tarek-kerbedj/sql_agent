@@ -1,14 +1,14 @@
 import re
+import io
 import docx2txt
 from pypdf import PdfReader
 from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter,RecursiveCharacterTextSplitter
 from fpdf import FPDF
-import streamlit as st
 from fpdf import FPDF
 import streamlit as st
 import zipfile
-import io
+
 
 
 def create_zip(pdf_contents, file_names):
