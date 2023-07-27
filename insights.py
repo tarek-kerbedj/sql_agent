@@ -17,7 +17,7 @@ resp=ChatOpenAI(temperature=0)
 if "info" not in st.session_state:
     st.session_state['info']=[]
 if "source" not in st.session_state:
-    st.session_state['source']="'Database Insights"
+    st.session_state['source']="Database Insights"
 if "file_names" not in st.session_state:
     st.session_state.file_names=[]
 if "uploaded_files" not in st.session_state:
