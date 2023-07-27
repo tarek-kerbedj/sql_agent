@@ -4,7 +4,6 @@ from langchain.vectorstores import Chroma
 from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
 from langchain.chains import ConversationalRetrievalChain
-
 import streamlit as st
 import hashlib
 from util_funcs import text_to_docs,parse_uploaded_file
@@ -112,19 +111,12 @@ def generate_answer(prompt,files):
         st.error('Error parsing the file')
 
     vectordb=create_embs(parsed_files)
-    try:
+
     
         
-        # generate the answer
-        pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}),max_tokens_limit=4097)
-        answer = pdfqa({"question": user_query,"chat_history":st.session_state.chat_his})
-
-    # if that fails , use the number of vectors provided in the error message
-    except NotEnoughElementsException as exc:
-
-        error_message=str(exc)
-        pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": int(error_message[-1])}),max_tokens_limit=4097)
-           
+    # generate the answer
+    pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}),max_tokens_limit=4097)
+    answer = pdfqa({"question": user_query,"chat_history":st.session_state.chat_his})
         #
     return answer['answer']
     # save the exchanged messages

@@ -5,7 +5,6 @@ from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter,RecursiveCharacterTextSplitter
 from fpdf import FPDF
 import streamlit as st
-
 def chat_history_download(history):
 
     """ this function creates a PDF file that contains the chat history of the user

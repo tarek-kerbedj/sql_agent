@@ -1,14 +1,11 @@
 import os
 import json
-from time import perf_counter
 import pandas as pd
 import streamlit as st
-from langchain.agents import create_pandas_dataframe_agent
 from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 import plotly.graph_objects as go
 from plotly.graph_objs import Figure
-from vis_funcs import *
 from style import *
 from utilities import *
 from core_funcs import  *
@@ -70,7 +67,6 @@ if URI:
         
                     if check_for_keywords(prompt,"visuals"):
                        
-                        #choice=resp.predict(f"is the user query asking for a data visualization task ?,some examples of data visualization tasks are : using verbs like show ,visualize and plot \n  answer with either yes or a no , here is the query :{prompt}")
                         example={'data': [
                 {
                     'x': [
@@ -93,12 +89,7 @@ if URI:
                         full_response=intermediate["intermediate_steps"]
         
                         intermediate=(intermediate["intermediate_steps"][0]['input'])
-                        #st.write(intermediate)
-                        #print(intermediate)
-                        #st.write(full_response[3])
-                        #st.write(intermediate["intermediate_steps"][2])
-
-
+        
                         full_response=resp.predict(f"given this answer from an SQL query {intermediate},generate and return the appropriate plotly JSON schema without any explainations or elaborations ,  here is an example for a bar chart {example}")
                 
                         full_response=full_response.replace("'", "\"")
@@ -110,7 +101,7 @@ if URI:
                             infos='\n'.join(st.session_state.info[-2:])
                             full_response=resp.predict(f"given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the links in this format [here](link)")
                             st.markdown(full_response)
-                            print(full_response)
+                      
 
                         else:
 
@@ -123,12 +114,12 @@ if URI:
                                 full_response="Sorry this question is not related to the data ,could you please ask a question specific to the database\n "
                     
                     # use markdown to be able to display html 
-                    #st.markdown(full_response,unsafe_allow_html=True)
+                                st.markdown(full_response,unsafe_allow_html=True)
             
                     # call this function to show the price using the callback handler
                     calculate_price(cb)
                 
-            #st.session_state.chat_his.append((prompt,full_response))
+        
             
             st.session_state.messages.append({"role": "assistant", "content": full_response})
     elif st.session_state['source']=="Document(s)":
@@ -193,7 +184,7 @@ if URI:
                 full_response = "" 
                 if check_for_keywords(prompt,"Signals")==False:
                     signals="\n\n".join(df[0])
-            
+             
                     full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                     st.markdown(full_response)
                 st.session_state.messages.append({"role": "assistant", "content": full_response})

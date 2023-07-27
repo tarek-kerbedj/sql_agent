@@ -7,6 +7,39 @@ import os
 os.environ["DB_STRING"]=st.secrets.DB_STRING
 
 from langchain.prompts.prompt import PromptTemplate
+from plotly.graph_objs import Figure
+import plotly.graph_objects as go
+import json
+def preprocess_visuals(full_response):
+    data_dict = json.loads(full_response)
+    title=data_dict['layout']['title']
+ 
+    chart_type = data_dict['data'][0]['type']
+    if chart_type=="line":
+        x_values = data_dict['data'][0]['x']
+        y_values = data_dict['data'][0]['y']
+       
+    elif chart_type=='pie':
+        x_values = data_dict['data'][0]['values']
+        y_values = data_dict['data'][0]['labels']
+     
+    elif chart_type=='bar':
+        x_values = data_dict['data'][0]['x']
+        y_values = data_dict['data'][0]['y']
+
+    fig = go.Figure()
+    if chart_type == 'bar':
+        fig.add_trace(go.Bar(x=x_values, y=y_values))
+        fig.update_layout(title_text=title)
+        return fig
+    elif chart_type == 'line':
+            fig.add_trace(go.Scatter(x=x_values, y=y_values, mode='lines'))
+            fig.update_layout(title_text=title)
+            return fig
+    elif chart_type == 'pie':
+            fig.add_trace(go.Pie(labels=y_values,values=x_values))
+            fig.update_layout(title_text=title)
+            return fig
 _DEFAULT_TEMPLATE ="""You are a SQLite expert. Given an input question, first create a syntactically correct SQLite query to run, then look at the results of the query and return the answer to the input question. Unless the user specifies in the question a specific number of examples to obtain,query for at most 5 results using the LIMIT clause as per SQLite. You can order the results to return the most informative data in the database.Never query for all columns from a table.Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table. Pay attention to use date('now') function to get the current date, if the question involves "today".
 
 if the user asks for a tabular format , return the final output as an HTML table.
