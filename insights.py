@@ -54,6 +54,7 @@ if URI:
         show_messages(st.session_state.messages)   
         
         if prompt := st.chat_input("How many clients are there?"):
+            st.session_state['prompt']=prompt
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user",avatar='https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png'):
                 st.markdown(prompt)
