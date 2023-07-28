@@ -5,7 +5,7 @@ from langchain.sql_database import SQLDatabase
 from langchain.chat_models import ChatOpenAI
 from langchain import SQLDatabaseChain
 import streamlit as st
-
+resp=ChatOpenAI(temperature=0)
 os.environ["DB_STRING"]=st.secrets.DB_STRING
 
 from langchain.prompts.prompt import PromptTemplate
@@ -117,7 +117,7 @@ def clean_answer(full_response):
     #full_response=full_response.replace('Final answer here',"")
     #full_response=full_response.replace(':'," ")
     full_response=full_response.replace("'","")
-    if re.search(r'logic|reasoning',full_response):
+    if re.search(r'logic|reasoning',st.session_state['prompt']):
         result=resp.predict(f'here is a free text response generated {full_response} ,i want you to turn it into a bulletpoint list ,dont explain anything')
    
         #sentences=re.split(r'\.(?![\d,])',full_response.strip())
