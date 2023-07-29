@@ -50,10 +50,13 @@ if URI:
      
         if "messages" not in st.session_state:
             st.session_state['messages']=[]
-            st.session_state.messages.append({"role": "assistant", "content": "Hello , how  may i help you today ?"})
+            st.session_state.messages.append({"role": "assistant", "content": "Hello, how  may I help you today ?"})
         show_messages(st.session_state.messages)   
         
         if prompt := st.chat_input("How many clients are there?"):
+            if prompt.strip()=="":
+                st.error('Please specify a query in order to proceed')
+                st.stop()
             st.session_state['prompt']=prompt
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user",avatar='https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png'):
