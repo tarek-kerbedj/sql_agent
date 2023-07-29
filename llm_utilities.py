@@ -59,7 +59,8 @@ _DEFAULT_TEMPLATE ="""You are a SQLite expert. Given an input question, first cr
 if the user asks for a tabular format , return the final output as an HTML table.
 if the output includes multiple items , return it in a  bulletpoint format.
 if the user asks about the reasoning behind an opportunity or a risk, check the description field for their signals.
-if the user asks about the next best action (NBA) for a client , include the links for it in this format [here](link).
+if the user asks about the next best action (NBA) for a client, include the links for it in this format [here](link).
+if the user asks what or who are top opportunities or risks , always bring back their relevant scores.
 Use the following format:
 
 Question: Question here 
