@@ -33,9 +33,10 @@ files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=[
 login=st.text_input('Insert a username')
 logins=pd.read_csv('logins.csv')
 if (login!="") and login in logins['Name'].values:
-        st.success('authentifaction succesful')
+        
         st.session_state['user']=login
         st.session_state['user_type']=logins[logins['Name']==login]['Function'].values[0]
+        st.success(f"authentifaction succesful for {st.session_state['user']}")
         st.write(st.session_state['user_type'])
 else:
     st.warning('Please insert an authorized username')
