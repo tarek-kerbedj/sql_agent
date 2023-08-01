@@ -12,9 +12,12 @@ from util_funcs import *
 from langchain.prompts.prompt import PromptTemplate
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 from langchain import SQLDatabase, SQLDatabaseChain
-
+from langchain.chains import LLMChain
+from langchain.memory import ConversationBufferMemory
 
 resp=ChatOpenAI(temperature=0)
+if "signal_history" not in st.session_state:
+    st.session_state['memory'] = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 if "info" not in st.session_state:
     st.session_state['info']=[]
 if "source" not in st.session_state:
@@ -186,18 +189,33 @@ if (login!="") and login in logins['Name'].values:
         st.session_state.uploaded_files=files
         df = pd.read_excel(st.session_state['uploaded_files'][0],header=None)
         if prompt := st.chat_input("What would you like to know about this document?"):
+            
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user",avatar='https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png'):
                 st.markdown(prompt)
             with st.chat_message("assistant",avatar='https://i.ibb.co/23kfBNr/Forwardlane-chat.png'):
                 message_placeholder = st.empty()
                 full_response = "" 
+                template = """You are a nice chatbot having a conversation with a human.
+
+                Previous conversation:
+                {chat_history}
+
+                New human question: {question}
+                Response:"""
+                temp = PromptTemplate.from_template(template)
                 if check_for_keywords(prompt,"Signals")==False:
+                    conversation = LLMChain(
+                            llm=resp,
+                            verbose=True,prompt=temp,
+                            memory=st.session_state.memory
+                        )
                     signals='\n\n'.join(df[0])
-               
-                    full_response=resp.predict(f'{prompt} ,these are some signals for customers {signals}. makes sure that you use the same format , without any explanations')
+                    full_response=conversation({"question":f'{prompt} ,these are some signals for customers {signals}. makes sure that you use the same format , without any explanations'})['text']
+                    #full_response=resp.predict(f'{prompt} ,these are some signals for customers {signals}. makes sure that you use the same format , without any explanations')
                     #full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                     st.markdown(full_response)
+                  
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
 else:
     st.warning('Please insert an authorized username')
