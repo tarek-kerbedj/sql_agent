@@ -13,6 +13,7 @@ from langchain.prompts.prompt import PromptTemplate
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 from langchain import SQLDatabase, SQLDatabaseChain
 
+
 resp=ChatOpenAI(temperature=0)
 if "info" not in st.session_state:
     st.session_state['info']=[]
@@ -26,8 +27,20 @@ if "summaries" not in st.session_state:
     st.session_state.summaries=[]
 os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
 # renders the title and logo
+
 header("forward_lane_icon.png","Insights")
 files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','xlsx'])
+login=st.text_input('Insert a username')
+logins=pd.read_csv('logins.csv')
+if (login!="") and login in logins['Name'].values:
+        st.success('authentifaction succesful')
+        st.session_state['user']=login
+        st.session_state['user_type']=logins[logins['Name']==login]['Function'].values[0]
+        st.write(st.session_state['user_type'])
+else:
+    st.warning('Please insert an authorized username')
+    st.session_state['user']=None
+    st.stop()
 
 if files !=[]:
     if "chat_his" not in st.session_state:
@@ -186,8 +199,12 @@ if URI:
                 message_placeholder = st.empty()
                 full_response = "" 
                 if check_for_keywords(prompt,"Signals")==False:
-                    signals="\n\n".join(df[0])
-             
-                    full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
+                    signals='\n\n'.join(df[0])
+                    full_response=response= openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo", messages=[{"role": "system", "content": ""},
+                    {"role": "user", "content": f"{prompt},generate 10 more signals,these are some signals for customers {signals}. makes sure that you use the same format , without any explanations"}])['choices'][0]['message']['content']
+
+                    #full_response=resp_predict(f'{prompt} ,these are some signals for customers {signals}. makes sure that you use the same format , without any explanations')
+                    #full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                     st.markdown(full_response)
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
