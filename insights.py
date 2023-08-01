@@ -32,15 +32,6 @@ header("forward_lane_icon.png","Insights")
 files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','xlsx'])
 login=st.text_input('Insert a username')
 logins=pd.read_csv('logins.csv')
-if (login!="") and login in logins['Name'].values:
-        
-        st.session_state['user']=login
-        st.session_state['user_type']=logins[logins['Name']==login]['Function'].values[0]
-        st.success(f"authentifaction succesful for {st.session_state['user']}")
-else:
-    st.warning('Please insert an authorized username')
-    st.session_state['user']=None
-    st.stop()
 
 if files !=[]:
     if "chat_his" not in st.session_state:
@@ -53,10 +44,14 @@ if files !=[]:
         st.session_state['source']=source
 
 
-URI=st.text_input('Insert URI',value="master_mock_up.db")
-if URI:
+
+if (login!="") and login in logins['Name'].values:
+        
+    st.session_state['user']=login
+    st.session_state['user_type']=logins[logins['Name']==login]['Function'].values[0]
+    st.success(f"authentifaction succesful for {st.session_state['user']}")
     if st.session_state.source=="Database Insights":
-        db_chain=load_db(f"sqlite:///{URI}")
+        db_chain=load_db()
         # print out the default prompt
         #st.write(db_chain.llm_chain.prompt.template)
         # save messages and chat history session state
@@ -204,3 +199,7 @@ if URI:
                     #full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                     st.markdown(full_response)
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
+else:
+    st.warning('Please insert an authorized username')
+    st.session_state['user']=None
+    st.stop()

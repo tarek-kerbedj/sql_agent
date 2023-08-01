@@ -132,7 +132,7 @@ def clean_answer(full_response):
         return full_response
 
 #@st.cache_resource()
-def load_db(uri):
+def load_db():
     """
     Establishes a connection to a SQL database and creates a SQLDatabaseChain instance.
 
