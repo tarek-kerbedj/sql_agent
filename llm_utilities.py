@@ -5,6 +5,7 @@ from langchain.sql_database import SQLDatabase
 from langchain.chat_models import ChatOpenAI
 from langchain import SQLDatabaseChain
 import streamlit as st
+import yaml
 resp=ChatOpenAI(temperature=0)
 os.environ["DB_STRING"]=st.secrets.DB_STRING
 
@@ -54,26 +55,26 @@ def preprocess_visuals(full_response):
             fig.add_trace(go.Pie(labels=y_values,values=x_values))
             fig.update_layout(title_text=title)
             return fig
-_DEFAULT_TEMPLATE ="""You are a SQLite expert. Given an input question, first create a syntactically correct SQLite query to run, then look at the results of the query and return the answer to the input question. Unless the user specifies in the question a specific number of examples to obtain,query for at most 5 results using the LIMIT clause as per SQLite. You can order the results to return the most informative data in the database.Never query for all columns from a table.Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table. Pay attention to use date('now') function to get the current date, if the question involves "today".
+# _DEFAULT_TEMPLATE ="""You are a SQLite expert. Given an input question, first create a syntactically correct SQLite query to run, then look at the results of the query and return the answer to the input question. Unless the user specifies in the question a specific number of examples to obtain,query for at most 5 results using the LIMIT clause as per SQLite. You can order the results to return the most informative data in the database.Never query for all columns from a table.Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table. Pay attention to use date('now') function to get the current date, if the question involves "today".
 
-if the user asks for a tabular format , return the final output as an HTML table.
-if the output includes multiple items , return it in a  bulletpoint format.
-if the user asks about the reasoning behind an opportunity or a risk, check the description field for their signals.
-if the user asks about the next best action (NBA) for a client, include the links for it in this format [here](link).
-if the user asks what or who are top opportunities or risks , always bring back their relevant scores.
-Use the following format:
+# if the user asks for a tabular format , return the final output as an HTML table.
+# if the output includes multiple items , return it in a  bulletpoint format.
+# if the user asks about the reasoning behind an opportunity or a risk, check the description field for their signals.
+# if the user asks about the next best action (NBA) for a client, include the links for it in this format [here](link).
+# if the user asks what or who are top opportunities or risks , always bring back their relevant scores.
+# Use the following format:
 
-Question: Question here 
-SQLQuery: SQL Query to run 
-SQLResult: Result of the SQLQuery 
-Answer: Final answer here
+# Question: Question here 
+# SQLQuery: SQL Query to run 
+# SQLResult: Result of the SQLQuery 
+# Answer: Final answer here
 
-Only use the following tables: {table_info}
+# Only use the following tables: {table_info}
 
-Question: {input}"""
-PROMPT = PromptTemplate(
-    input_variables=["input", "table_info"], template=_DEFAULT_TEMPLATE
-)
+# Question: {input}"""
+# PROMPT = PromptTemplate(
+#     input_variables=["input", "table_info"], template=_DEFAULT_TEMPLATE
+# )
 def check_for_keywords(text,flag):
     if flag=="summary":
         pattern = r'\b(summary|summarize|summarization|summarize[sd]|summarizing)\b'
@@ -145,6 +146,12 @@ def load_db(uri):
 
     Returns:
     SQLDatabaseChain: A SQLDatabaseChain instance connected to the specified database."""
+    with open(f'prompts.yaml','r') as f:
+        output = yaml.safe_load(f)
+    if st.session_state['user_type']!=None:
+        _DEFAULT_TEMPLATE=output[st.session_state['user_type']]
+    PROMPT = PromptTemplate(
+    input_variables=["input", "table_info"], template=_DEFAULT_TEMPLATE)
     db=SQLDatabase.from_uri(st.secrets.DB_STRING)
     db_chain = SQLDatabaseChain.from_llm(ChatOpenAI(temperature=0), db, verbose=True,prompt=PROMPT,return_intermediate_steps=True)
     return db_chain
