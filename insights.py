@@ -4,6 +4,7 @@ import streamlit as st
 from langchain.chat_models import ChatOpenAI
 import plotly.graph_objects as go
 import pandas as pd
+from time import perf_counter
 from plotly.graph_objs import Figure
 from style import *
 from llm_utilities import *
@@ -16,6 +17,9 @@ from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 
 resp=ChatOpenAI(temperature=0)
+if "log" not in st.session_state:
+    st.session_state['log']=[]
+    st.session_state['log'].append(('Operation','Cost','Number of tokens','time taken(s)'))
 if "signal_history" not in st.session_state:
     st.session_state['memory'] = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 if "info" not in st.session_state:
@@ -34,6 +38,13 @@ os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
 header("forward_lane_icon.png","Insights")
 files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','xlsx'])
 login=st.text_input('Insert a username')
+if st.session_state['log']!=[] and login in['Tarek','Roland']:
+    st.download_button(
+                            label="Download logs",
+                            data=log_download(),
+                            file_name='log.csv',
+                            mime='text/csv',help="download summary in a CSV Format ",
+                            )
 logins=pd.read_csv('logins.csv')
 
 if files !=[]:
@@ -76,11 +87,7 @@ if (login!="") and login in logins['Name'].values:
                 message_placeholder = st.empty()
                 full_response = ""
                 
-                with get_openai_callback() as cb:
-                    st_callback = StreamlitCallbackHandler(st.container())
-        
-                    if check_for_keywords(prompt,"visuals"):
-                       
+                if check_for_keywords(prompt,"visuals"):       
                         example={'data': [
                 {
                     'x': [
@@ -98,41 +105,57 @@ if (login!="") and login in logins['Name'].values:
             ],  'layout': {
                 'title': 'Plot Title'
             }
-        }
-                        intermediate=db_chain(f'{prompt}')
-                        full_response=intermediate["intermediate_steps"]
-        
-                        intermediate=(intermediate["intermediate_steps"][0]['input'])
-        
-                        full_response=resp.predict(f"given this answer from an SQL query {intermediate},generate and return the appropriate plotly JSON schema without any explainations or elaborations ,  here is an example for a bar chart {example}")
-                
-                        full_response=full_response.replace("'", "\"")
+        }               
+                        with get_openai_callback() as cb:
+                            st_callback = StreamlitCallbackHandler(st.container())
+                            t1=perf_counter()
+                            intermediate=db_chain(f'{prompt}')
+                            full_response=intermediate["intermediate_steps"]
+            
+                            intermediate=(intermediate["intermediate_steps"][0]['input'])
+            
+                            full_response=resp.predict(f"given this answer from an SQL query {intermediate},generate and return the appropriate plotly JSON schema without any explainations or elaborations ,  here is an example for a bar chart {example}")
                     
-                        full_response=preprocess_visuals(full_response)
+                            full_response=full_response.replace("'", "\"")
+                        
+                            full_response=preprocess_visuals(full_response)
+                            t2=perf_counter()
+                        total_cost,total_tokens=calculate_price(cb)
+                        st.session_state['log'].append(("Visualization",total_cost,total_tokens,t2-t1))
                         st.plotly_chart(full_response, use_container_width=True)
-                    else:
+                else:
+
                         if check_for_keywords(prompt,"emails"):
-                            infos='\n'.join(st.session_state.info[-2:])
-                            full_response=resp.predict(f"given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the links in this format [here](link)")
+                            with get_openai_callback() as cb:
+                                st_callback = StreamlitCallbackHandler(st.container())
+                                t1=perf_counter()
+                                infos='\n'.join(st.session_state.info[-2:])
+                                full_response=resp.predict(f"given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the links in this format [here](link)")
+                                t2=perf_counter()
+                            total_cost,total_tokens=calculate_price(cb)
+                            st.session_state['log'].append(("Email",total_cost,total_tokens,t2-t1))
                             st.markdown(full_response)
                       
 
                         else:
 
                             try:
+                                with get_openai_callback() as cb:
+                                    st_callback = StreamlitCallbackHandler(st.container())
+                                    t1=perf_counter()
                                     full_response=db_chain(f'{prompt}')['result']
                                     full_response=clean_answer(full_response)
-                                    st.session_state['info'].append(full_response)
-                                    st.markdown(full_response,unsafe_allow_html=True)
+                                    t2=perf_counter()
+                                total_cost,total_tokens=calculate_price(cb)
+                                st.session_state['log'].append(("DB CALL",total_cost,total_tokens,t2-t1))
+                                st.session_state['info'].append(full_response)
+                                st.markdown(full_response,unsafe_allow_html=True)
                             except:
                                 full_response="Sorry this question is not related to the data ,could you please ask a question specific to the database\n "
                     
                     # use markdown to be able to display html 
                                 st.markdown(full_response,unsafe_allow_html=True)
-            
-                    # call this function to show the price using the callback handler
-                    calculate_price(cb)
-                
+                      
         
             st.session_state.messages.append({"role": "assistant", "content": full_response})
     elif st.session_state['source']=="Document Q&A":
@@ -146,8 +169,14 @@ if (login!="") and login in logins['Name'].values:
                 message_placeholder = st.empty()
                 full_response = "" 
                 if check_for_keywords(prompt,"summary")==False:
-
-                    full_response=generate_answer(prompt,st.session_state.uploaded_files)
+                    with get_openai_callback() as cb:
+                            t1=perf_counter()
+                            st_callback = StreamlitCallbackHandler(st.container())
+                            full_response=generate_answer(prompt,st.session_state.uploaded_files)
+                            t2=perf_counter()
+                    total_cost,total_tokens=calculate_price(cb)
+                    st.session_state['log'].append(("Document Q&A",total_cost,total_tokens,t2-t1))
+                           
                     st.session_state.chat_his.append((prompt,full_response))
                     st.markdown(full_response)
            
@@ -211,11 +240,16 @@ if (login!="") and login in logins['Name'].values:
                             memory=st.session_state.memory
                         )
                     signals='\n\n'.join(df[0])
-                    full_response=conversation({"question":f'{prompt} ,these are some signals for customers {signals}. makes sure that you use the same format , without any explanations'})['text']
+                    with get_openai_callback() as cb:
+                            t1=perf_counter()
+                            st_callback = StreamlitCallbackHandler(st.container())
+                            full_response=conversation({"question":f'{prompt} ,these are some signals for customers {signals}. makes sure that you use the same format , without any explanations'})['text']
                     #full_response=resp.predict(f'{prompt} ,these are some signals for customers {signals}. makes sure that you use the same format , without any explanations')
                     #full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
+                            t2=perf_counter()
                     st.markdown(full_response)
-                  
+                    total_cost,total_tokens=calculate_price(cb)
+                    st.session_state['log'].append(("Signal_Generator",total_cost,total_tokens,t2-t1))
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
 else:
     st.warning('Please insert an authorized username')

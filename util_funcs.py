@@ -9,7 +9,13 @@ from fpdf import FPDF
 import streamlit as st
 import zipfile
 
-
+import pandas as pd
+def log_download():
+    data=st.session_state['log']
+    df = pd.DataFrame(data[1:], columns=data[0])
+    output = io.StringIO()
+    df.to_csv(output, index=False)
+    return output.getvalue().encode('utf-8-sig')
 
 def create_zip(pdf_contents, file_names):
     """ this function creates a zip that contains PDFS
