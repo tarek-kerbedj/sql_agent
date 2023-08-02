@@ -216,7 +216,13 @@ if (login!="") and login in logins['Name'].values:
     elif st.session_state['source']=="Signal Generator":
         show_messages(st.session_state.messages)
         st.session_state.uploaded_files=files
-        df = pd.read_excel(st.session_state['uploaded_files'][0],header=None)
+        try:
+
+            df = pd.read_excel(st.session_state['uploaded_files'][0],header=None)
+        except 
+            st.warning('Error parsing the file , please make sure that you upload an excel file')
+            st.stop()
+            
         if prompt := st.chat_input("What would you like to know about this document?"):
             
             st.session_state.messages.append({"role": "user", "content": prompt})
