@@ -219,7 +219,7 @@ if (login!="") and login in logins['Name'].values:
         try:
 
             df = pd.read_excel(st.session_state['uploaded_files'][0],header=None)
-        except 
+        except:
             st.warning('Error parsing the file , please make sure that you upload an excel file')
             st.stop()
             
