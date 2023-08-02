@@ -13,7 +13,7 @@ import pandas as pd
 def log_download():
     data=st.session_state['log']
     df = pd.DataFrame(data[1:], columns=data[0])
-    df["Cost"] = df["Cost"].apply(lambda x: format(x, '.4f'))
+    df["Cost($)"] = df["Cost($)"].apply(lambda x: format(x, '.4f'))
     output = io.StringIO()
     df.to_csv(output, index=False)
     return output.getvalue().encode('utf-8-sig')
