@@ -19,7 +19,7 @@ from langchain.memory import ConversationBufferMemory
 resp=ChatOpenAI(temperature=0)
 if "log" not in st.session_state:
     st.session_state['log']=[]
-    st.session_state['log'].append(('Operation','Cost','Number of tokens','time taken(s)'))
+    st.session_state['log'].append(('Prompt','Operation','Cost','Number of tokens','time taken(s)'))
 if "signal_history" not in st.session_state:
     st.session_state['memory'] = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 if "info" not in st.session_state:
@@ -121,7 +121,7 @@ if (login!="") and login in logins['Name'].values:
                             full_response=preprocess_visuals(full_response)
                             t2=perf_counter()
                         total_cost,total_tokens=calculate_price(cb)
-                        st.session_state['log'].append(("Visualization",total_cost,total_tokens,t2-t1))
+                        st.session_state['log'].append((prompt,"Visualization",total_cost,total_tokens,t2-t1))
                         st.plotly_chart(full_response, use_container_width=True)
                 else:
 
@@ -133,7 +133,7 @@ if (login!="") and login in logins['Name'].values:
                                 full_response=resp.predict(f"given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the links in this format [here](link)")
                                 t2=perf_counter()
                             total_cost,total_tokens=calculate_price(cb)
-                            st.session_state['log'].append(("Email",total_cost,total_tokens,t2-t1))
+                            st.session_state['log'].append((prompt,"Email",total_cost,total_tokens,t2-t1))
                             st.markdown(full_response)
                       
 
@@ -147,7 +147,7 @@ if (login!="") and login in logins['Name'].values:
                                     full_response=clean_answer(full_response)
                                     t2=perf_counter()
                                 total_cost,total_tokens=calculate_price(cb)
-                                st.session_state['log'].append(("DB CALL",total_cost,total_tokens,t2-t1))
+                                st.session_state['log'].append((prompt,"DB CALL",total_cost,total_tokens,t2-t1))
                                 st.session_state['info'].append(full_response)
                                 st.markdown(full_response,unsafe_allow_html=True)
                             except:
@@ -175,7 +175,7 @@ if (login!="") and login in logins['Name'].values:
                             full_response=generate_answer(prompt,st.session_state.uploaded_files)
                             t2=perf_counter()
                     total_cost,total_tokens=calculate_price(cb)
-                    st.session_state['log'].append(("Document Q&A",total_cost,total_tokens,t2-t1))
+                    st.session_state['log'].append((prompt,"Document Q&A",total_cost,total_tokens,t2-t1))
                            
                     st.session_state.chat_his.append((prompt,full_response))
                     st.markdown(full_response)
@@ -255,7 +255,7 @@ if (login!="") and login in logins['Name'].values:
                             t2=perf_counter()
                     st.markdown(full_response)
                     total_cost,total_tokens=calculate_price(cb)
-                    st.session_state['log'].append(("Signal_Generator",total_cost,total_tokens,t2-t1))
+                    st.session_state['log'].append((prompt,"Signal_Generator",total_cost,total_tokens,t2-t1))
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
 else:
     st.warning('Please insert an authorized username')
