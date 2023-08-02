@@ -176,7 +176,7 @@ def show_messages(messages):
             else:
                 st.plotly_chart(message['content'], use_container_width=True)
 def calculate_price(cb):
-            return (("$"+str(cb.total_cost),cb.total_tokens))
+            return (f"${cb.total_cost:.4f}", f"{cb.total_tokens:.4f}")
             # print(f"Total Tokens: {cb.total_tokens}")
             # print(f"Prompt Tokens: {cb.prompt_tokens}")
             # print(f"Completion Tokens: {cb.completion_tokens}")
