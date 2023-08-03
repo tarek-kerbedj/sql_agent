@@ -224,7 +224,7 @@ elif st.session_state['source']=="Signal Generator":
                         t1=perf_counter()
                         st_callback = StreamlitCallbackHandler(st.container())
                         full_response=conversation({"question":f'{prompt} ,these are some signals for customers {signals}. makes sure that you use the same format , without any explanations'})['text']
-                #full_response=resp.predict(f'{prompt} ,these are some signals for customers {signals}. makes sure that you use the same format , without any explanations')
+      
                 #full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                         t2=perf_counter()
                 st.markdown(full_response)

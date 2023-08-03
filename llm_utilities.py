@@ -8,10 +8,13 @@ import streamlit as st
 import yaml
 resp=ChatOpenAI(temperature=0)
 os.environ["DB_STRING"]=st.secrets.DB_STRING
-
+from langchain.chains import LLMChain
 from langchain.prompts.prompt import PromptTemplate
 from plotly.graph_objs import Figure
 import plotly.graph_objects as go
+
+with open(f'prompts.yaml','r') as f:
+        output = yaml.safe_load(f)
 
 def preprocess_visuals(full_response):
     """takes a string representation of a json that contains a plotly chart and returns a plotly figure object
@@ -132,6 +135,12 @@ def clean_answer(full_response):
         return full_response
 
 #@st.cache_resource()
+def signal_generator():
+    template=output['Signal Generator']
+    temp = PromptTemplate.from_template(template)
+    conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
+    return conversation
+
 def load_db():
     """
     Establishes a connection to a SQL database and creates a SQLDatabaseChain instance.
@@ -146,8 +155,7 @@ def load_db():
 
     Returns:
     SQLDatabaseChain: A SQLDatabaseChain instance connected to the specified database."""
-    with open(f'prompts.yaml','r') as f:
-        output = yaml.safe_load(f)
+    
     if st.session_state['user_type']!=None:
         _DEFAULT_TEMPLATE=output[st.session_state['user_type']]
     PROMPT = PromptTemplate(
