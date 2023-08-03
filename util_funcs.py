@@ -55,6 +55,25 @@ def load_config():
         st.session_state.messages.append({"role": "assistant", "content": "Hello, how  may I help you today ?"})
     if "chat_his" not in st.session_state:
         st.session_state.chat_his=[]
+    if "visuals_example" not in st.session_state:
+        st.session_state.example={'data': [
+            {
+                'x': [
+                    "giraffes",
+                    "orangutans",
+                    "monkeys"
+                ],
+                'y': [
+                    20,
+                    14,
+                    23
+                ],
+                'type': 'bar'
+            }
+        ],  'layout': {
+            'title': 'Plot Title'
+        }
+    }    
 
 def log_download():
     """this function creates a csv that contains the logs of the different aspects of the webapp ,using the logs stored in the session state

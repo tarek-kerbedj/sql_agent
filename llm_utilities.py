@@ -25,7 +25,7 @@ def preprocess_visuals(full_response):
         fig : plotly.graph_objects
         a plotly figure
     """
-    
+    full_response=full_response.replace("'", "\"")
     data_dict = json.loads(full_response)
     title=data_dict['layout']['title']
  

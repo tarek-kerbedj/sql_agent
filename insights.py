@@ -26,7 +26,7 @@ os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
 header("forward_lane_icon.png","Insights")
 files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','xlsx'])
 login=st.text_input('Insert a username')
-
+# admin logs
 if st.session_state['log']!=[] and login in['Tarek','Roland']:
     st.download_button(
                             label="Download logs",
@@ -45,16 +45,14 @@ if files !=[]:
 else:
     # if there are no files uploaded , default to the database
     st.session_state['source']="Database Insights"
-
+#login process
 login_config(login)
 
 if st.session_state.source=="Database Insights":
     db_chain=load_db()
-    # print out the default prompt
-    #st.write(db_chain.llm_chain.prompt.template)
-    # save messages and chat history session state
 
-    
+    #st.write(db_chain.llm_chain.prompt.template)
+        
     show_messages(st.session_state.messages)   
     
     if prompt := st.chat_input("How many clients are there?"):
@@ -70,24 +68,7 @@ if st.session_state.source=="Database Insights":
             full_response = ""
             
             if check_for_keywords(prompt,"visuals"):       
-                    example={'data': [
-            {
-                'x': [
-                    "giraffes",
-                    "orangutans",
-                    "monkeys"
-                ],
-                'y': [
-                    20,
-                    14,
-                    23
-                ],
-                'type': 'bar'
-            }
-        ],  'layout': {
-            'title': 'Plot Title'
-        }
-    }               
+            
                     with get_openai_callback() as cb:
                         st_callback = StreamlitCallbackHandler(st.container())
                         t1=perf_counter()
@@ -96,9 +77,9 @@ if st.session_state.source=="Database Insights":
         
                         intermediate=(intermediate["intermediate_steps"][0]['input'])
         
-                        full_response=resp.predict(f"given this answer from an SQL query {intermediate},generate and return the appropriate plotly JSON schema without any explainations or elaborations ,  here is an example for a bar chart {example}")
+                        full_response=resp.predict(f"given this answer from an SQL query {intermediate},generate and return the appropriate plotly JSON schema without any explainations or elaborations ,  here is an example for a bar chart {st.session_state.example}")
                 
-                        full_response=full_response.replace("'", "\"")
+                        #full_response=full_response.replace("'", "\"")
                     
                         full_response=preprocess_visuals(full_response)
                         t2=perf_counter()
@@ -237,11 +218,7 @@ elif st.session_state['source']=="Signal Generator":
             Response:"""
             temp = PromptTemplate.from_template(template)
             if check_for_keywords(prompt,"Signals")==False:
-                conversation = LLMChain(
-                        llm=resp,
-                        verbose=True,prompt=temp,
-                        memory=st.session_state.memory
-                    )
+                conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
                 signals='\n\n'.join(df[0])
                 with get_openai_callback() as cb:
                         t1=perf_counter()
