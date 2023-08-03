@@ -176,6 +176,7 @@ elif st.session_state['source']=="Document Q&A":
                         _, extension = os.path.splitext(f.name)
                         if extension not in ['.pdf','.docx',".txt"]:
                             st.error('Please upload a valid document , currently the supported documents are :PDFs, Docx and text files')
+                            st.stop()
                         st.session_state.file_names.append(f.name.split('.')[0])
 
                     full_response="\n\n\n\n".join(generate_summary(st.session_state.uploaded_files))
