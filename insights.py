@@ -17,21 +17,22 @@ from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 
 resp=ChatOpenAI(temperature=0)
-if "log" not in st.session_state:
-    st.session_state['log']=[]
-    st.session_state['log'].append(('Prompt','Operation','Cost($)','Number of tokens','time taken(s)'))
-if "signal_history" not in st.session_state:
-    st.session_state['memory'] = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-if "info" not in st.session_state:
-    st.session_state['info']=[]
-if "source" not in st.session_state:
-    st.session_state['source']="Database Insights"
-if "file_names" not in st.session_state:
-    st.session_state.file_names=[]
-if "uploaded_files" not in st.session_state:
-    st.session_state.uploaded_files=[]
-if "summaries" not in st.session_state:
-    st.session_state.summaries=[]
+load_config()
+# if "log" not in st.session_state:
+#     st.session_state['log']=[]
+#     st.session_state['log'].append(('Prompt','Operation','Cost($)','Number of tokens','time taken(s)'))
+# if "signal_history" not in st.session_state:
+#     st.session_state['memory'] = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+# if "info" not in st.session_state:
+#     st.session_state['info']=[]
+# if "source" not in st.session_state:
+#     st.session_state['source']="Database Insights"
+# if "file_names" not in st.session_state:
+#     st.session_state.file_names=[]
+# if "uploaded_files" not in st.session_state:
+#     st.session_state.uploaded_files=[]
+# if "summaries" not in st.session_state:
+#     st.session_state.summaries=[]
 os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
 # renders the title and logo
 
