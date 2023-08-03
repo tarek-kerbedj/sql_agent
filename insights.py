@@ -175,7 +175,7 @@ elif st.session_state['source']=="Document Q&A":
                         st.write("- "+f.name)
                         _, extension = os.path.splitext(f.name)
                         if extension not in ['.pdf','.docx',".txt"]:
-                            st.error('Please upload a valid document , currently the supported documents are :PDFs, Docx and text files')
+                            st.error('Please upload a valid document , currently the supported documents are : PDFs, Docx and text files')
                             st.stop()
                         st.session_state.file_names.append(f.name.split('.')[0])
 
@@ -203,6 +203,10 @@ elif st.session_state['source']=="Signal Generator":
     
     show_messages(st.session_state.messages)
     st.session_state.uploaded_files=files
+    _, extension = os.path.splitext(st.session_state['uploaded_files'][0].name)
+    if extension not in ['.xlsx']:
+        st.error('Please upload a valid excel file')
+        st.stop()
     try:
 
         df = pd.read_excel(st.session_state['uploaded_files'][0],header=None)
