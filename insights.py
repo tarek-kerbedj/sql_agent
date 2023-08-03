@@ -51,7 +51,7 @@ if st.session_state.source=="Database Insights":
     # save messages and chat history session state
 
 
-    st.session_state.messages.append({"role": "assistant", "content": "Hello, how  may I help you today ?"})
+    
     show_messages(st.session_state.messages)   
     
     if prompt := st.chat_input("How many clients are there?"):

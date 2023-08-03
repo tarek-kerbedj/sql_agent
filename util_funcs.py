@@ -51,6 +51,7 @@ def load_config():
         st.session_state.summaries=[]
     if "messages" not in st.session_state:
         st.session_state.messages=[]
+        st.session_state.messages.append({"role": "assistant", "content": "Hello, how  may I help you today ?"})
     if "chat_his" not in st.session_state:
         st.session_state.chat_his=[]
 
