@@ -17,6 +17,7 @@ from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 
 resp=ChatOpenAI(temperature=0)
+
 load_config()
 
 os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
@@ -49,7 +50,6 @@ if st.session_state.source=="Database Insights":
     # print out the default prompt
     #st.write(db_chain.llm_chain.prompt.template)
     # save messages and chat history session state
-
 
     
     show_messages(st.session_state.messages)   
@@ -141,6 +141,9 @@ elif st.session_state['source']=="Document Q&A":
     show_messages(st.session_state.messages)
     st.session_state.uploaded_files=files
     if prompt := st.chat_input("What would you like to know about this document?"):
+        if prompt.strip()=="":
+            st.error('Please specify a query in order to proceed')
+            st.stop()
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user",avatar="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png"):
             st.markdown(prompt)
@@ -193,16 +196,20 @@ elif st.session_state['source']=="Document Q&A":
                 
             st.session_state.messages.append({"role": "assistant", "content": full_response})
 elif st.session_state['source']=="Signal Generator":
+    
     show_messages(st.session_state.messages)
     st.session_state.uploaded_files=files
     try:
 
         df = pd.read_excel(st.session_state['uploaded_files'][0],header=None)
     except:
-        st.warning('Error parsing the file , please make sure that you upload an excel file')
+        st.error('Error parsing the file , please make sure that you upload an excel file')
         st.stop()
         
     if prompt := st.chat_input("you are an asset manager , help me generate similair signals"):
+        if prompt.strip()=="":
+            st.error('Please specify a query in order to proceed')
+            st.stop()
         
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user",avatar='https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png'):
