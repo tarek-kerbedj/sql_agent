@@ -167,18 +167,21 @@ elif st.session_state['source']=="Document Q&A":
                     full_response=('Please make sure to upload a document before proceeding')
                     st.write(full_response)
                 else:
-        
+                    
                     st.session_state.summaries=[]
                     st.session_state.file_names=[]
+                    st.write('Summarizing the file(s) below...')
                     for f in st.session_state.uploaded_files:
                         st.write("- "+f.name)
+                        _, extension = os.path.splitext(f.name)
+                        if extension not in ['.pdf','.docx',".txt"]:
+                            st.error('Please upload a valid document , currently the supported documents are :PDFs, Docx and text files')
                         st.session_state.file_names.append(f.name.split('.')[0])
-    
+
                     full_response="\n\n\n\n".join(generate_summary(st.session_state.uploaded_files))
                     st.markdown(full_response,unsafe_allow_html=True)
-                    st.write(len(st.session_state.uploaded_files))
-                    if len(st.session_state.uploaded_files)>1:
-                    
+    
+                    if len(st.session_state.uploaded_files)>1:                
                         st.download_button(
                         label="Download summary",
                         data=summary_download(),
@@ -203,7 +206,7 @@ elif st.session_state['source']=="Signal Generator":
 
         df = pd.read_excel(st.session_state['uploaded_files'][0],header=None)
     except:
-        st.error('Error parsing the file , please make sure that you upload an excel file')
+        st.error('Error parsing the excel file')
         st.stop()
         
     if prompt := st.chat_input("you are an asset manager , help me generate similair signals"):

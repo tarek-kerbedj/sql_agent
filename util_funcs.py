@@ -1,5 +1,6 @@
 import re
 import io
+import os
 import zipfile
 import docx2txt
 from pypdf import PdfReader
@@ -67,7 +68,23 @@ def log_download():
     output = io.StringIO()
     df.to_csv(output, index=False)
     return output.getvalue().encode('utf-8-sig')
+def check_extension(file_names, target_extensions):
+    """
+    Check if the extensions of files in the given list are different from any of the target extensions.
 
+    Parameters:
+    file_names (list): A list of file names.
+    target_extensions (list): A list of target extensions to compare against.
+
+    Returns:
+    bool: True if any file has an extension different from any of the target extensions, otherwise False.
+    """
+    for file_name in file_names:
+        _, extension = os.path.splitext(file_name)
+        if extension not in target_extensions:
+            return True
+
+    return False
 def create_zip(pdf_contents, file_names):
     """ this function creates a zip that contains PDFS
             Parameters:
