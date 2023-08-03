@@ -1,18 +1,39 @@
 import re
 import io
+import zipfile
 import docx2txt
 from pypdf import PdfReader
 from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter,RecursiveCharacterTextSplitter
-from fpdf import FPDF
 from langchain.memory import ConversationBufferMemory
 from fpdf import FPDF
 import streamlit as st
-import zipfile
-
 import pandas as pd
+logins=pd.read_csv('logins.csv')
+
+def documents_config(files):
+    """ this function restarts the chat history  and the uploaded files in the session state"""
+    st.session_state.chat_his=[]
+
+    st.session_state.uploaded_files=files
+
+def login_config(login):
+    if (login!="") and login in logins['Name'].values:
+
+        st.session_state['user']=login
+        st.session_state['user_type']=logins[logins['Name']==login]['Function'].values[0]
+        st.success(f"authentifaction succesful for {st.session_state['user']}")
+    else:
+        st.warning('Please insert an authorized username')
+        st.session_state['user']=None
+        st.stop()
 
 def load_config():
+    """this function initializes session states for the different variables that are used in the app such as the log , source etc...
+    parameters:
+        None
+    Returns:
+        None"""
     if "log" not in st.session_state:
         st.session_state['log']=[]
         st.session_state['log'].append(('Prompt','Operation','Cost($)','Number of tokens','time taken(s)'))
@@ -28,8 +49,17 @@ def load_config():
         st.session_state.uploaded_files=[]
     if "summaries" not in st.session_state:
         st.session_state.summaries=[]
+    if "messages" not in st.session_state:
+        st.session_state.messages=[]
+    if "chat_his" not in st.session_state:
+        st.session_state.chat_his=[]
 
 def log_download():
+    """this function creates a csv that contains the logs of the different aspects of the webapp ,using the logs stored in the session state
+    Parameters:
+        None
+    Returns:
+        csv_buffer(Bytes): a Bytes object that will be passed to the streamlit download button"""
     data=st.session_state['log']
     df = pd.DataFrame(data[1:], columns=data[0])
     df["Cost($)"] = df["Cost($)"].apply(lambda x: format(x, '.4f'))
