@@ -23,7 +23,7 @@ def login_config(login):
 
         st.session_state['user']=login
         st.session_state['user_type']=logins[logins['Name']==login]['Function'].values[0]
-        st.success(f"authentifaction succesful for {st.session_state['user']}")
+        st.success(f"authentication succesful for {st.session_state['user']}")
     else:
         st.warning('Please insert an authorized username')
         st.session_state['user']=None
