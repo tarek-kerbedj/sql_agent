@@ -55,7 +55,7 @@ if st.session_state.source=="Database Insights":
         
     show_messages(st.session_state.messages)   
     
-    if prompt := st.chat_input("How many clients are there?"):
+    if prompt := st.chat_input(""):
         if prompt.strip()=="":
             st.error('Please specify a query in order to proceed')
             st.stop()
@@ -124,7 +124,7 @@ if st.session_state.source=="Database Insights":
 elif st.session_state['source']=="Document Q&A":
     show_messages(st.session_state.messages)
     st.session_state.uploaded_files=files
-    if prompt := st.chat_input("What would you like to know about this document?"):
+    if prompt := st.chat_input(""):
         if prompt.strip()=="":
             st.error('Please specify a query in order to proceed')
             st.stop()
@@ -198,7 +198,7 @@ elif st.session_state['source']=="Signal Generator":
         st.error('Error parsing the excel file')
         st.stop()
         
-    if prompt := st.chat_input("you are an asset manager , help me generate similair signals"):
+    if prompt := st.chat_input(""):
         if prompt.strip()=="":
             st.error('Please specify a query in order to proceed')
             st.stop()
