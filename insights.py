@@ -93,7 +93,7 @@ if st.session_state.source=="Database Insights":
                             st_callback = StreamlitCallbackHandler(st.container())
                             t1=perf_counter()
                             infos='\n'.join(st.session_state.info[-2:])
-                            full_response=resp.predict(f"given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the links in this format [here](link)")
+                            full_response=resp.predict(f" given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the links in this format [here](link)")
                             t2=perf_counter()
                         total_cost,total_tokens=calculate_price(cb)
                         st.session_state['log'].append((prompt,"Email",total_cost,total_tokens,t2-t1))
@@ -114,7 +114,7 @@ if st.session_state.source=="Database Insights":
                             st.session_state['info'].append(full_response)
                             st.markdown(full_response,unsafe_allow_html=True)
                         except:
-                            full_response="Sorry this question is not related to the data ,could you please ask a question specific to the database\n "
+                            full_response="Sorry this question is not related to the data, could you please ask a question specific to the database\n "
                 
                 # use markdown to be able to display html 
                             st.markdown(full_response,unsafe_allow_html=True)
@@ -223,7 +223,7 @@ elif st.session_state['source']=="Signal Generator":
                 with get_openai_callback() as cb:
                         t1=perf_counter()
                         st_callback = StreamlitCallbackHandler(st.container())
-                        full_response=conversation({"question":f'{prompt} ,these are some signals for customers {signals}. makes sure that you use the same format , without any explanations'})['text']
+                        full_response=conversation({"question":f'{prompt} , these are some signals for customers {signals}. makes sure that you use the same format, without any explanations.Dont include the signals that I listed'})['text']
       
                 #full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                         t2=perf_counter()
