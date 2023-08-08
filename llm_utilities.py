@@ -7,7 +7,7 @@ from langchain import SQLDatabaseChain
 import streamlit as st
 import yaml
 resp=ChatOpenAI(temperature=0)
-os.environ["DB_STRING"]=st.secrets.DB_STRING
+os.environ["DB_STRING"]=os.getenv('DB_STRING')
 from langchain.chains import LLMChain
 from langchain.prompts.prompt import PromptTemplate
 from plotly.graph_objs import Figure
@@ -160,7 +160,7 @@ def load_db():
         _DEFAULT_TEMPLATE=output[st.session_state['user_type']]
     PROMPT = PromptTemplate(
     input_variables=["input", "table_info"], template=_DEFAULT_TEMPLATE)
-    db=SQLDatabase.from_uri(st.secrets.DB_STRING)
+    db=SQLDatabase.from_uri(os.getenv('DB_STRING'))
     db_chain = SQLDatabaseChain.from_llm(ChatOpenAI(temperature=0), db, verbose=True,prompt=PROMPT,return_intermediate_steps=True)
     return db_chain
 def show_messages(messages):

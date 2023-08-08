@@ -20,7 +20,7 @@ resp=ChatOpenAI(temperature=0)
 
 load_config()
 
-os.environ["OPENAI_API_Key"]=st.secrets.OPENAI_API_KEY
+os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
 # renders the title and logo
 
 header("forward_lane_icon.png","Insights")
