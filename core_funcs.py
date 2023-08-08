@@ -15,7 +15,7 @@ from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
        # st.session_state.vectordb={}
 if "file_name" not in st.session_state:
     st.session_state.file_name=""
-llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo",request_timeout=120)
+llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",request_timeout=120)
 
 def generate_summary(files):
    
@@ -115,7 +115,7 @@ def generate_answer(prompt,files):
     
         
     # generate the answer
-    pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}),max_tokens_limit=4097)
+    pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}))
     answer = pdfqa({"question": user_query,"chat_history":st.session_state.chat_his})
         #
     return answer['answer']
