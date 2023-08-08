@@ -223,8 +223,9 @@ elif st.session_state['source']=="Signal Generator":
                 with get_openai_callback() as cb:
                         t1=perf_counter()
                         st_callback = StreamlitCallbackHandler(st.container())
-                        full_response=conversation({"question":f'{prompt} , these are some signals for customers {signals}. makes sure that you use the same format, without any explanations.Dont include the signals that I listed'})['text']
-      
+                        #full_response=conversation({"question":f'{prompt} , these are some signals for customers {signals}. makes sure that you use the same format, without any explanations.Dont include the signals that I listed'})['text']
+                        full_response=conversation({"question":f'{prompt} , these are some signals for customers that should serve as an example : {signals}. makes sure that you use the same format , without any explanations . dont include the signals that i listed'})['text']
+
                 #full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                         t2=perf_counter()
                 st.markdown(full_response)
