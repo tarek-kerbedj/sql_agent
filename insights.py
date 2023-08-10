@@ -16,6 +16,7 @@ from langchain import SQLDatabase, SQLDatabaseChain
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 import logging
+logging.basicConfig(level=logging.INFO)
 resp=ChatOpenAI(temperature=0)
 
 load_config()
