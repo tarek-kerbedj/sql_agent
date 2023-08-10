@@ -86,7 +86,7 @@ if st.session_state.source=="Database Insights":
                         t2=perf_counter()
                     total_cost,total_tokens=calculate_price(cb)
                     st.session_state['log'].append((prompt,"Visualization",total_cost,total_tokens,t2-t1))
-                    logging.info(f"Visualization,${total_cost},{total_tokens},{t2-t1})")
+                    logging.info(f"Visualization,${total_cost},{total_tokens},{t2-t1}")
                     st.plotly_chart(full_response, use_container_width=True)
             else:
 
@@ -99,6 +99,7 @@ if st.session_state.source=="Database Insights":
                             t2=perf_counter()
                         total_cost,total_tokens=calculate_price(cb)
                         st.session_state['log'].append((prompt,"Email",total_cost,total_tokens,t2-t1))
+                        logging.info(f"Email,${total_cost},{total_tokens},{t2-t1}")
                         st.markdown(full_response)
                 
 
@@ -112,7 +113,9 @@ if st.session_state.source=="Database Insights":
                                 full_response=clean_answer(full_response)
                                 t2=perf_counter()
                             total_cost,total_tokens=calculate_price(cb)
-                            st.session_state['log'].append((prompt,"DB CALL",total_cost,total_tokens,t2-t1))
+                            st.session_state['log'].append((prompt,"DB_CALL",total_cost,total_tokens,t2-t1))
+                            #logging.info(f"DB_CALL,${total_cost},{total_tokens},{t2-t1}")
+                            logging.info(f"DB_CALL,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
                             st.session_state['info'].append(full_response)
                             st.markdown(full_response,unsafe_allow_html=True)
                         except:
@@ -144,7 +147,7 @@ elif st.session_state['source']=="Document Q&A":
                         t2=perf_counter()
                 total_cost,total_tokens=calculate_price(cb)
                 st.session_state['log'].append((prompt,"Document Q&A",total_cost,total_tokens,t2-t1))
-                    
+                logging.info(f"Document_Q&A,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
                 st.session_state.chat_his.append((prompt,full_response))
                 st.markdown(full_response)
     
@@ -232,4 +235,5 @@ elif st.session_state['source']=="Signal Generator":
                 st.markdown(full_response)
                 total_cost,total_tokens=calculate_price(cb)
                 st.session_state['log'].append((prompt,"Signal_Generator",total_cost,total_tokens,t2-t1))
+                logging.info(f"Signal_Generation,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
             st.session_state.messages.append({"role": "assistant", "content": full_response})
