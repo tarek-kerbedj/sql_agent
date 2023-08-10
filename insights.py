@@ -86,7 +86,10 @@ if st.session_state.source=="Database Insights":
                         t2=perf_counter()
                     total_cost,total_tokens=calculate_price(cb)
                     st.session_state['log'].append((prompt,"Visualization",total_cost,total_tokens,t2-t1))
-                    logging.info(f"Visualization,${total_cost},{total_tokens},{t2-t1}")
+                    logging.info(f"Visualization,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+
+                    if (t2-t1)>1:
+                        logging.warning('Visualization took too long')
                     st.plotly_chart(full_response, use_container_width=True)
             else:
 
@@ -99,7 +102,8 @@ if st.session_state.source=="Database Insights":
                             t2=perf_counter()
                         total_cost,total_tokens=calculate_price(cb)
                         st.session_state['log'].append((prompt,"Email",total_cost,total_tokens,t2-t1))
-                        logging.info(f"Email,${total_cost},{total_tokens},{t2-t1}")
+                        logging.info(f"Email,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                
                         st.markdown(full_response)
                 
 
