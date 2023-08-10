@@ -15,7 +15,7 @@ from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 from langchain import SQLDatabase, SQLDatabaseChain
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
-
+import logging
 resp=ChatOpenAI(temperature=0)
 
 load_config()
@@ -85,6 +85,7 @@ if st.session_state.source=="Database Insights":
                         t2=perf_counter()
                     total_cost,total_tokens=calculate_price(cb)
                     st.session_state['log'].append((prompt,"Visualization",total_cost,total_tokens,t2-t1))
+                    logging.info(f"Visualization,${total_cost},{total_tokens},{t2-t1})")
                     st.plotly_chart(full_response, use_container_width=True)
             else:
 
