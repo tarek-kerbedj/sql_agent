@@ -16,9 +16,11 @@ from langchain import SQLDatabase, SQLDatabaseChain
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 import logging
+from opencensus.ext.azure.log_exporter import AzureLogHandler
 logging.basicConfig(level=logging.INFO)
 resp=ChatOpenAI(temperature=0)
-
+logger = logging.getLogger(__name__)
+logger.addHandler(AzureLogHandler())
 load_config()
 
 os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
@@ -86,7 +88,7 @@ if st.session_state.source=="Database Insights":
                         t2=perf_counter()
                     total_cost,total_tokens=calculate_price(cb)
                     st.session_state['log'].append((prompt,"Visualization",total_cost,total_tokens,t2-t1))
-                    logging.info(f"Visualization,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                    logger.info(f"Visualization,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
 
                     if (t2-t1)>1:
                         logging.warning('Visualization took too long')

@@ -11,3 +11,4 @@ chromadb==0.3.29
 psycopg2-binary
 openpyxl
 pyyaml
+opencensus-ext-azure
