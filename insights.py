@@ -89,9 +89,12 @@ if st.session_state.source=="Database Insights":
                         t2=perf_counter()
                     total_cost,total_tokens=calculate_price(cb)
                     st.session_state['log'].append((prompt,"Visualization",total_cost,total_tokens,t2-t1))
-                    logger.info(f"Visualization,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                    #logger.info(f"Visualization,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                    logger.info('Task completed', extra={'TaskType': 'Visualization', 'Price': f'${total_cost:.3f}', 'Tokens': f'{total_tokens:.3f}', 'Time': f'{t2-t1:.3f}'})
 
-                    if (t2-t1)>1:
+              
+        
+                    if (t2-t1)>10:
                         logging.warning('Visualization took too long')
                     st.plotly_chart(full_response, use_container_width=True)
             else:
@@ -105,7 +108,8 @@ if st.session_state.source=="Database Insights":
                             t2=perf_counter()
                         total_cost,total_tokens=calculate_price(cb)
                         st.session_state['log'].append((prompt,"Email",total_cost,total_tokens,t2-t1))
-                        logging.info(f"Email,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                        #logging.info(f"Email,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                        logger.info('Task completed', extra={'TaskType': 'Email', 'Price': f'${total_cost:.3f}', 'Tokens': f'{total_tokens:.3f}', 'Time': f'{t2-t1:.3f}'})
                 
                         st.markdown(full_response)
                 
@@ -122,7 +126,8 @@ if st.session_state.source=="Database Insights":
                             total_cost,total_tokens=calculate_price(cb)
                             st.session_state['log'].append((prompt,"DB_CALL",total_cost,total_tokens,t2-t1))
                             #logging.info(f"DB_CALL,${total_cost},{total_tokens},{t2-t1}")
-                            logging.info(f"DB_CALL,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                            #logging.info(f"DB_CALL,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                            logger.info('Task completed', extra={'TaskType': 'DB_QUERY', 'Price': f'${total_cost:.3f}', 'Tokens': f'{total_tokens:.3f}', 'Time': f'{t2-t1:.3f}'})
                             st.session_state['info'].append(full_response)
                             st.markdown(full_response,unsafe_allow_html=True)
                         except:
@@ -154,7 +159,8 @@ elif st.session_state['source']=="Document Q&A":
                         t2=perf_counter()
                 total_cost,total_tokens=calculate_price(cb)
                 st.session_state['log'].append((prompt,"Document Q&A",total_cost,total_tokens,t2-t1))
-                logging.info(f"Document_Q&A,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                #logging.info(f"Document_Q&A,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                logger.info('Task completed', extra={'TaskType': 'Document_Q&A', 'Price': f'${total_cost:.3f}', 'Tokens': f'{total_tokens:.3f}', 'Time': f'{t2-t1:.3f}'})
                 st.session_state.chat_his.append((prompt,full_response))
                 st.markdown(full_response)
     
@@ -242,5 +248,7 @@ elif st.session_state['source']=="Signal Generator":
                 st.markdown(full_response)
                 total_cost,total_tokens=calculate_price(cb)
                 st.session_state['log'].append((prompt,"Signal_Generator",total_cost,total_tokens,t2-t1))
-                logging.info(f"Signal_Generation,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                #logging.info(f"Signal_Generation,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+                logger.info('Task completed', extra={'TaskType': 'Signal_Generator', 'Price': f'${total_cost:.3f}', 'Tokens': f'{total_tokens:.3f}', 'Time': f'{t2-t1:.3f}'})
+                
             st.session_state.messages.append({"role": "assistant", "content": full_response})
