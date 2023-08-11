@@ -20,7 +20,8 @@ from opencensus.ext.azure.log_exporter import AzureLogHandler
 logging.basicConfig(level=logging.INFO)
 resp=ChatOpenAI(temperature=0)
 logger = logging.getLogger(__name__)
-logger.addHandler(AzureLogHandler())
+os.environ['connection_string']=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
+logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
 load_config()
 
 os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
