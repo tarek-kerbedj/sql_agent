@@ -58,43 +58,45 @@ def preprocess_visuals(full_response):
             fig.add_trace(go.Pie(labels=y_values,values=x_values))
             fig.update_layout(title_text=title)
             return fig
-# _DEFAULT_TEMPLATE ="""You are a SQLite expert. Given an input question, first create a syntactically correct SQLite query to run, then look at the results of the query and return the answer to the input question. Unless the user specifies in the question a specific number of examples to obtain,query for at most 5 results using the LIMIT clause as per SQLite. You can order the results to return the most informative data in the database.Never query for all columns from a table.Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table. Pay attention to use date('now') function to get the current date, if the question involves "today".
+def check_for_keywords(text, flag):
+    """This Function checks for certain keywords in the user prompt using regex
+    Parameters:
+        text (str): The input text to be checked for keywords.
+        flag (str): The flag to specify which kind of keywords we are looking for.
+    Returns:
+        bool: True if the flag is found in the text, False otherwise.
+    """
+    
+    patterns = {
+        "summary": r'\b(summary|summarize|summarization|summarize[sd]|summarizing)\b',
+        "visuals": r'\b(Plot|visualize|visualization|Draw|Graph[s]|Chart[s]|Line plot|Bar chart|Pie chart)\b',
+        "emails": r'\b(email)\b',
+        "Signals": r'\bsignal[s]?\b'
+    }
 
-# if the user asks for a tabular format , return the final output as an HTML table.
-# if the output includes multiple items , return it in a  bulletpoint format.
-# if the user asks about the reasoning behind an opportunity or a risk, check the description field for their signals.
-# if the user asks about the next best action (NBA) for a client, include the links for it in this format [here](link).
-# if the user asks what or who are top opportunities or risks , always bring back their relevant scores.
-# Use the following format:
-
-# Question: Question here 
-# SQLQuery: SQL Query to run 
-# SQLResult: Result of the SQLQuery 
-# Answer: Final answer here
-
-# Only use the following tables: {table_info}
-
-# Question: {input}"""
-# PROMPT = PromptTemplate(
-#     input_variables=["input", "table_info"], template=_DEFAULT_TEMPLATE
-# )
-def check_for_keywords(text,flag):
-    if flag=="summary":
-        pattern = r'\b(summary|summarize|summarization|summarize[sd]|summarizing)\b'
-       
-    elif flag=='visuals':
-        pattern = r'\b(Plot|visualize|visualization|Draw|Graph[s]|Chart[s]|Line plot|Bar chart|Pie chart)\b'
-     
-    elif flag=="emails":
-        pattern=r'\b(email)\b'
-    elif flag=='Signals':
-        pattern=r"b(signal|signal[s])\b"
-
-    match = re.search(pattern, text, re.IGNORECASE)
-    if match:
-        return True
-    else:
+    pattern = patterns.get(flag)
+    if pattern is None:
         return False
+
+    return bool(re.search(pattern, text, re.IGNORECASE))
+# def check_for_keywords(text,flag):
+#     """This Function checks for certain keywords using regex"""
+#     if flag=="summary":
+#         pattern = r'\b(summary|summarize|summarization|summarize[sd]|summarizing)\b'
+       
+#     elif flag=='visuals':
+#         pattern = r'\b(Plot|visualize|visualization|Draw|Graph[s]|Chart[s]|Line plot|Bar chart|Pie chart)\b'
+     
+#     elif flag=="emails":
+#         pattern=r'\b(email)\b'
+#     elif flag=='Signals':
+#         pattern=r"b(signal[s])\b"
+
+#     match = re.search(pattern, text, re.IGNORECASE)
+#     if match:
+#         return True
+#     else:
+#         return False
 
 def clean_answer(full_response):
     """Clean and sanitize the LLM response.
@@ -136,6 +138,13 @@ def clean_answer(full_response):
 
 #@st.cache_resource()
 def signal_generator():
+    """creates a signal generator LLM chain instance , with memory and prompt
+    Parameters:
+        None
+    Returns:
+        conversation : LLMChain
+            A LLMChain instance with a prompt and memory.
+    """
     template=output['Signal Generator']
     temp = PromptTemplate.from_template(template)
     conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
@@ -183,10 +192,3 @@ def show_messages(messages):
             
             else:
                 st.plotly_chart(message['content'], use_container_width=True)
-def calculate_price(cb):
-            return((cb.total_cost,cb.total_tokens))
-            #return (f"${cb.total_cost:.4f}", f"{cb.total_tokens:.4f}")
-            # print(f"Total Tokens: {cb.total_tokens}")
-            # print(f"Prompt Tokens: {cb.prompt_tokens}")
-            # print(f"Completion Tokens: {cb.completion_tokens}")
-            # print(f"Total Cost (USD): ${cb.total_cost}")

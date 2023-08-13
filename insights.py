@@ -68,7 +68,7 @@ if st.session_state.source=="Database Insights":
             full_response = ""
             
             if check_for_keywords(prompt,"visuals"):       
-            
+                    # context manager to calculate number of tokens / cost
                     with get_openai_callback() as cb:
                         st_callback = StreamlitCallbackHandler(st.container())
                         t1=perf_counter()
@@ -96,13 +96,15 @@ if st.session_state.source=="Database Insights":
             else:
 
                     if check_for_keywords(prompt,"emails"):
+                        # context manager to calculate number of tokens / cost
                         with get_openai_callback() as cb:
                             st_callback = StreamlitCallbackHandler(st.container())
                             t1=perf_counter()
                             infos='\n'.join(st.session_state.info[-2:])
                             full_response=resp.predict(f"given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the links in this format [here](link)")
                             t2=perf_counter()
-                        total_cost,total_tokens=calculate_price(cb)
+
+                        total_cost,total_tokens=cb.total_cost,cb.total_tokens
                         st.session_state['log'].append((prompt,"Email",total_cost,total_tokens,t2-t1))
                         #logging.info(f"Email,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
                         logger.info('Task completed', extra={'TaskType': 'Email', 'Price': f'${total_cost:.3f}', 'Tokens': f'{total_tokens:.3f}', 'Time': f'{t2-t1:.3f}'})
@@ -113,13 +115,14 @@ if st.session_state.source=="Database Insights":
                     else:
 
                         try:
+                            # context manager to calculate number of tokens / cost
                             with get_openai_callback() as cb:
                                 st_callback = StreamlitCallbackHandler(st.container())
                                 t1=perf_counter()
                                 full_response=db_chain(f'{prompt}')['result']
                                 full_response=clean_answer(full_response)
                                 t2=perf_counter()
-                            total_cost,total_tokens=calculate_price(cb)
+                            total_cost,total_tokens=cb.total_cost,cb.total_tokens
                             st.session_state['log'].append((prompt,"DB_CALL",total_cost,total_tokens,t2-t1))
                             #logging.info(f"DB_CALL,${total_cost},{total_tokens},{t2-t1}")
                             #logging.info(f"DB_CALL,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
@@ -153,7 +156,7 @@ elif st.session_state['source']=="Document Q&A":
                         st_callback = StreamlitCallbackHandler(st.container())
                         full_response=generate_answer(prompt,st.session_state.uploaded_files)
                         t2=perf_counter()
-                total_cost,total_tokens=calculate_price(cb)
+                total_cost,total_tokens=cb.total_cost,cb.total_tokens
                 st.session_state['log'].append((prompt,"Document Q&A",total_cost,total_tokens,t2-t1))
                 #logging.info(f"Document_Q&A,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
                 logger.info('Task completed', extra={'TaskType': 'Document_Q&A', 'Price': f'${total_cost:.3f}', 'Tokens': f'{total_tokens:.3f}', 'Time': f'{t2-t1:.3f}'})
@@ -241,7 +244,7 @@ elif st.session_state['source']=="Signal Generator":
                 #full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                         t2=perf_counter()
                 st.markdown(full_response)
-                total_cost,total_tokens=calculate_price(cb)
+                total_cost,total_tokens=cb.total_cost,cb.total_tokens
                 st.session_state['log'].append((prompt,"Signal_Generator",total_cost,total_tokens,t2-t1))
                 #logging.info(f"Signal_Generation,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
                 logger.info('Task completed', extra={'TaskType': 'Signal_Generator', 'Price': f'${total_cost:.3f}', 'Tokens': f'{total_tokens:.3f}', 'Time': f'{t2-t1:.3f}'})
