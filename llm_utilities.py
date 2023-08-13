@@ -12,9 +12,12 @@ from langchain.chains import LLMChain
 from langchain.prompts.prompt import PromptTemplate
 from plotly.graph_objs import Figure
 import plotly.graph_objects as go
-
-with open(f'prompts.yaml','r') as f:
+@st.cache_data()
+def load_yaml():
+    with open(f'prompts.yaml','r') as f:
         output = yaml.safe_load(f)
+        return output
+output=load_yaml()
 
 def preprocess_visuals(full_response):
     """takes a string representation of a json that contains a plotly chart and returns a plotly figure object
