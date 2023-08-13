@@ -12,7 +12,7 @@ from langchain.chains import LLMChain
 from langchain.prompts.prompt import PromptTemplate
 from plotly.graph_objs import Figure
 import plotly.graph_objects as go
-@st.cache_data()
+@st.cache_data
 def load_yaml():
     with open(f'prompts.yaml','r') as f:
         output = yaml.safe_load(f)
@@ -120,26 +120,21 @@ def clean_answer(full_response):
     str
         The cleaned and sanitized version of the input full_response string.
     """
+    if not isinstance(full_response, str):
+        raise ValueError("full_response must be a string")
     full_response=full_response.replace('"',"'")
     pattern = r'Final answer\s?(Here|here:|:)?'
     full_response = re.sub(pattern, "", full_response)
     
-    #full_response=full_response.replace('Final answer here',"")
-    #full_response=full_response.replace(':'," ")
     full_response=full_response.replace("'","")
     if re.search(r'logic|reasoning',st.session_state['prompt']):
         result=resp.predict(f'here is a free text response generated {full_response} ,i want you to turn it into a bulletpoint list ,dont explain anything')
-   
-        #sentences=re.split(r'\.(?![\d,])',full_response.strip())
 
-        # print(sentences)
-        #bullet_list = ["- " + sentence.strip() for sentence in sentences[:-1] if sentence.strip()]
-        #result="\n".join(bullet_list)
         return result
     else:
         return full_response
 
-#@st.cache_resource()
+@st.cache_resource
 def signal_generator():
     """creates a signal generator LLM chain instance , with memory and prompt
     Parameters:
@@ -192,6 +187,5 @@ def show_messages(messages):
         with st.chat_message(message["role"],avatar=icon):
             if type(message['content'])==str:
                 st.markdown(message["content"],unsafe_allow_html=True)
-            
             else:
                 st.plotly_chart(message['content'], use_container_width=True)

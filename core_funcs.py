@@ -18,6 +18,10 @@ if "file_name" not in st.session_state:
 llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",request_timeout=120)
 
 def generate_summary(files):
+    """
+    this function will summarize the documents after parsing them and loading the approrpiate summarizing chain
+    Parameters:
+        Files(List): represents the raw uploaded files """
    
     parsed_files=[parse_uploaded_file(f) for f in files]
  
@@ -30,21 +34,10 @@ def generate_summary(files):
     for f in parsed_files:
 
         summary=map_reduce.run(text_to_docs(f))
-        #st.write(summary)
-
+   
         st.session_state.summaries.append(summary)
     return st.session_state.summaries
                                           
-    #summary_chain.run(docs)
-    
-
-# Add page numbers as metadata
-
-        
-       
-    
-    
-    
 
 
 @st.cache_resource
@@ -74,37 +67,20 @@ def generate_answer(prompt,files):
     """ this function will handle parsing the document , turning it into embeddings and the query
          Parameters:
                 parsed_files (list of lists): represents a list of the parsed documents
-  
+                prompt (str): the user query
             Returns:
-                    None"""
-    # Takes user input
-    user_query = prompt
-    # clear the text box
+                answer(str): represents the output from the LLM"""
 
 
     # if the user query is empty return a warning 
-    if user_query.strip()=='':
+    if prompt.strip()=='':
         st.warning('user query cant be empty, Please type something in the text box')
         return
  
-       
-    #with st.spinner("Indexing document... This may take a while⏳"):
+
         # parsing the uploaded files
     try:
         parsed_files=[parse_uploaded_file(f)for f in files]
-        #
-        #file_names=
-        # mash the file names into one string
-        #file_names_string="".join([f.name for f in files])
-        # make sure its in unicode
-        #encoded_string = file_names_string.encode('utf-8')
-        # create a hash object
-        #hash_object=hashlib.blake2s()
-        # pass the string 
-        #hash_object.update(encoded_string)
-        #hashed_string = hash_object.hexdigest()
-        #save the hash as file name
-        #st.session_state.file_name=hashed_string
 
         
     except:
@@ -117,11 +93,5 @@ def generate_answer(prompt,files):
     # generate the answer
     pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}))
     answer = pdfqa({"question": user_query,"chat_history":st.session_state.chat_his})
-        #
     return answer['answer']
-    # save the exchanged messages
 
-    #st.session_state.history.append({"message": user_query, "is_user": True})
-    #st.session_state.history.append({"message": answer['answer'], "is_user": False})
-    #st.session_state.chat_his.append((user_query,answer['answer']))
- 
