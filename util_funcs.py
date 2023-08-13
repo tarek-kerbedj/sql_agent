@@ -10,7 +10,16 @@ from langchain.memory import ConversationBufferMemory
 from fpdf import FPDF
 import streamlit as st
 import pandas as pd
+import logging
+from opencensus.ext.azure.log_exporter import AzureLogHandler
 logins=pd.read_csv('logins.csv')
+
+def setup_logger():
+    logger = logging.getLogger(__name__)
+    if not logger.handlers:
+        logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
+        logger.setLevel(logging.INFO)
+    return logger
 
 def documents_config(files):
     """ this function restarts the chat history  and the uploaded files in the session state"""

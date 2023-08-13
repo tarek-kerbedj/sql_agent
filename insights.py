@@ -17,11 +17,12 @@ from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
+logger=setup_logger()
 os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
 resp=ChatOpenAI(temperature=0)
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
+# logging.basicConfig(level=logging.INFO)
+# logger = logging.getLogger(__name__)
+# logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
 
 load_config()
 header("forward_lane_icon.png","Insights")
@@ -51,7 +52,6 @@ login_config(login)
 
 if st.session_state.source=="Database Insights":
     db_chain=load_db()
-    #st.write(db_chain.llm_chain.prompt.template)
         
     show_messages(st.session_state.messages)   
     
@@ -79,13 +79,11 @@ if st.session_state.source=="Database Insights":
         
                         full_response=resp.predict(f"given this answer from an SQL query {intermediate},generate and return the appropriate plotly JSON schema without any explainations or elaborations ,  here is an example for a bar chart {st.session_state.example}")
                 
-                        #full_response=full_response.replace("'", "\"")
-                    
                         full_response=preprocess_visuals(full_response)
                         t2=perf_counter()
                     total_cost,total_tokens=calculate_price(cb)
                     st.session_state['log'].append((prompt,"Visualization",total_cost,total_tokens,t2-t1))
-                    #logger.info(f"Visualization,${total_cost:.3f},{total_tokens:.3f},{t2-t1:.3f}")
+              
                     logger.info('Task completed', extra={'TaskType': 'Visualization', 'Price': f'${total_cost:.3f}', 'Tokens': f'{total_tokens:.3f}', 'Time': f'{t2-t1:.3f}'})
 
               
