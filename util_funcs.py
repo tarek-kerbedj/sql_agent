@@ -15,6 +15,12 @@ from opencensus.ext.azure.log_exporter import AzureLogHandler
 logins=pd.read_csv('logins.csv')
 
 def setup_logger():
+    """this function initializes a logger and adds the azure handler so the logs can be streamlined to Application insights
+    Parameters:
+        None
+    Returns:
+        logger(logging.Logger): a logger object
+        """
     logger = logging.getLogger(__name__)
     if not logger.handlers:
         logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
