@@ -17,16 +17,13 @@ from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
-logging.basicConfig(level=logging.INFO)
-resp=ChatOpenAI(temperature=0)
-logger = logging.getLogger(__name__)
-os.environ['connection_string']=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
-logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
-load_config()
-
 os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
-# renders the title and logo
+resp=ChatOpenAI(temperature=0)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
 
+load_config()
 header("forward_lane_icon.png","Insights")
 files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','xlsx'])
 login=st.text_input('Insert a username')
@@ -54,7 +51,6 @@ login_config(login)
 
 if st.session_state.source=="Database Insights":
     db_chain=load_db()
-
     #st.write(db_chain.llm_chain.prompt.template)
         
     show_messages(st.session_state.messages)   

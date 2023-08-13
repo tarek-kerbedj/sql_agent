@@ -140,7 +140,7 @@ def signal_generator():
     temp = PromptTemplate.from_template(template)
     conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
     return conversation
-
+@st.cache_resource(ttl=360)
 def load_db():
     """
     Establishes a connection to a SQL database and creates a SQLDatabaseChain instance.
