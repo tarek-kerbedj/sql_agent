@@ -85,7 +85,12 @@ if st.session_state.source=="Database Insights":
                     
                     st.session_state['log'].append((prompt,"Visualization",total_cost,total_tokens,t2-t1))
               
-                    logger.info('Task completed', extra={'TaskType': 'Visualization', 'Price': f'${total_cost:.3f}', 'Tokens': f'{total_tokens:.3f}', 'Time': f'{t2-t1:.3f}'})
+                    extra_dimensions = {
+                        'TaskType': 'Visualization', 
+                        'Price': f'${total_cost:.3f}',
+                        'Tokens': f'{total_tokens:.3f}',
+                        'Time': f'{t2-t1:.3f}'}
+                    logger.info('Task completed', extra=extra_dimensions)
 
               
         
