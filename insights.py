@@ -20,14 +20,14 @@ from opencensus.ext.azure.log_exporter import AzureLogHandler
 logger=setup_logger()
 os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
 resp=ChatOpenAI(temperature=0)
-file_path = "/home/test.txt"
-with open(file_path, 'w') as file:
-    file.write("Hello, World!")
-isFile = os.path.isfile(file_path)
-if isFile:
-    st.write('File does exist')
-else:
-    st.write('File does not exist')
+# file_path = "/home/test.txt"
+# with open(file_path, 'w') as file:
+#     file.write("Hello, World!")
+# isFile = os.path.isfile(file_path)
+# if isFile:
+#     st.write('File does exist')
+# else:
+#     st.write('File does not exist')
 # logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)
 # logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
