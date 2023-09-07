@@ -9,7 +9,7 @@ import hashlib
 from util_funcs import text_to_docs,parse_uploaded_file
 from langchain.chat_models import ChatOpenAI
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
-
+from langchain.vectorstores import FAISS
 # initialize the LLM
 #if vectordb not in st.session_state:
        # st.session_state.vectordb={}
@@ -58,8 +58,8 @@ def  create_embs(parsed_files):
     embeddings = OpenAIEmbeddings()
    
     # create the vectorstore
-    
-    vectordb = Chroma.from_documents(docs, embeddings, collection_name="collection")
+    vectordb = FAISS.from_documents(docs, embeddings)
+    #vectordb = Chroma.from_documents(docs, embeddings, collection_name="collection")
 
     return vectordb
 
@@ -92,6 +92,6 @@ def generate_answer(prompt,files):
         
     # generate the answer
     pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}))
-    answer = pdfqa({"question": user_query,"chat_history":st.session_state.chat_his})
+    answer = pdfqa({"question": prompt,"chat_history":st.session_state.chat_his})
     return answer['answer']
 

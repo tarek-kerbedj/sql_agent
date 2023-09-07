@@ -23,7 +23,7 @@ def setup_logger():
         """
     logger = logging.getLogger(__name__)
     if not logger.handlers:
-        logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
+        logger.addHandler(AzureLogHandler(connection_string="InstrumentationKey=fab70ad1-fad5-4a94-a008-9a186dc84553;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/"))
         logger.setLevel(logging.INFO)
     return logger
 

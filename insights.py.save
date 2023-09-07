@@ -16,10 +16,9 @@ from langchain import SQLDatabase, SQLDatabaseChain
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 import logging
-import boto3
-from opencensus.ext.azure.log_exporter import AzureLogHandler
+
 logger=setup_logger()
-os.environ["OPENAI_API_KEY"]=os.getenv('OPENAI_API_KEY')
+os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
 resp=ChatOpenAI(temperature=0)
 # file_path = "/home/test.txt"
 # with open(file_path, 'w') as file:
@@ -32,7 +31,7 @@ resp=ChatOpenAI(temperature=0)
 # logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)
 # logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
-
+import bo
 load_config()
 header("forward_lane_icon.png","Insights")
 files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','xlsx'])

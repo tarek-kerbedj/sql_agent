@@ -7,7 +7,6 @@ from langchain import SQLDatabaseChain
 import streamlit as st
 import yaml
 resp=ChatOpenAI(temperature=0)
-os.environ["DB_STRING"]=os.getenv('DB_STRING')
 from langchain.chains import LLMChain
 from langchain.prompts.prompt import PromptTemplate
 from plotly.graph_objs import Figure
