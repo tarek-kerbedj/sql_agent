@@ -12,6 +12,20 @@ from langchain.chains import LLMChain
 from langchain.prompts.prompt import PromptTemplate
 from plotly.graph_objs import Figure
 import plotly.graph_objects as go
+from langchain.llms import Bedrock
+from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
+import boto3
+
+session = boto3.Session(
+        aws_access_key_id=os.getenv('Access_key_ID'),
+        aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1'
+    )
+
+
+llm = Bedrock(
+        session=session,
+        model_id="anthropic.claude-v2"
+    )
 @st.cache_data
 def load_yaml():
     with open(f'prompts.yaml','r') as f:
@@ -168,7 +182,7 @@ def load_db():
     PROMPT = PromptTemplate(
     input_variables=["input", "table_info"], template=_DEFAULT_TEMPLATE)
     db=SQLDatabase.from_uri(os.getenv('DB_STRING'))
-    db_chain = SQLDatabaseChain.from_llm(ChatOpenAI(temperature=0), db, verbose=True,prompt=PROMPT,return_intermediate_steps=True)
+    db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True,prompt=PROMPT,return_intermediate_steps=True)
     return db_chain
 def show_messages(messages):
     """

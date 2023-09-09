@@ -8,14 +8,26 @@ import streamlit as st
 import hashlib
 from util_funcs import text_to_docs,parse_uploaded_file
 from langchain.chat_models import ChatOpenAI
+from langchain.llms import Bedrock
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
+import boto3
 
+session = boto3.Session(
+        aws_access_key_id=os.getenv('Access_key_ID'),
+        aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1'
+    )
+
+
+llm = Bedrock(
+        session=session,
+        model_id="anthropic.claude-v2"
+    )
 # initialize the LLM
 #if vectordb not in st.session_state:
        # st.session_state.vectordb={}
 if "file_name" not in st.session_state:
     st.session_state.file_name=""
-llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",request_timeout=120)
+#llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",request_timeout=120)
 
 def generate_summary(files):
     """
