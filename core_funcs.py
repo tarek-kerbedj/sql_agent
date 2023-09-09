@@ -5,6 +5,7 @@ from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
 from langchain.chains import ConversationalRetrievalChain
 import streamlit as st
+import os
 import hashlib
 from util_funcs import text_to_docs,parse_uploaded_file
 from langchain.chat_models import ChatOpenAI
@@ -14,12 +15,10 @@ import boto3
 
 session = boto3.Session(
         aws_access_key_id=os.getenv('Access_key_ID'),
-        aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1'
-    )
+        aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1')
 
 
 llm = Bedrock(
-        session=session,
         model_id="anthropic.claude-v2"
     )
 # initialize the LLM

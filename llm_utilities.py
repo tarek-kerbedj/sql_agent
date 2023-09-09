@@ -17,15 +17,11 @@ from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
 
 session = boto3.Session(
-        aws_access_key_id=os.getenv('Access_key_ID'),
-        aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1'
-    )
+        aws_access_key_id=os.getenv('Access_key_ID'),aws_secret_access_key=os.getenv('Secret_access_key'), region_name='us-east-1')
 
 
 llm = Bedrock(
-        session=session,
-        model_id="anthropic.claude-v2"
-    )
+      model_id="anthropic.claude-v2")
 @st.cache_data
 def load_yaml():
     with open(f'prompts.yaml','r') as f:
