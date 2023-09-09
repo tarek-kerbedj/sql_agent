@@ -92,6 +92,6 @@ def generate_answer(prompt,files):
         
     # generate the answer
     pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}))
-    answer = pdfqa({"question": user_query,"chat_history":st.session_state.chat_his})
+    answer = pdfqa({"question": prompt,"chat_history":st.session_state.chat_his})
     return answer['answer']
 

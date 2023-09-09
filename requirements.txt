@@ -8,7 +8,10 @@ pypdf==3.9.0
 openai
 tiktoken
 chromadb==0.3.29
+faiss-cpu==1.7.4
 psycopg2-binary
 openpyxl
 pyyaml
 opencensus-ext-azure
+./wheels/boto3-1.28.21-py3-none-any.whl
+./wheels/botocore-1.31.21-py3-none-any.whl

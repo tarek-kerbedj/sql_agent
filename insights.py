@@ -20,14 +20,14 @@ from opencensus.ext.azure.log_exporter import AzureLogHandler
 logger=setup_logger()
 os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
 resp=ChatOpenAI(temperature=0)
-file_path = "/home/test.txt"
-with open(file_path, 'w') as file:
-    file.write("Hello, World!")
-isFile = os.path.isfile(file_path)
-if isFile:
-    st.write('File does exist')
-else:
-    st.write('File does not exist')
+# file_path = "/home/test.txt"
+# with open(file_path, 'w') as file:
+#     file.write("Hello, World!")
+# isFile = os.path.isfile(file_path)
+# if isFile:
+#     st.write('File does exist')
+# else:
+#     st.write('File does not exist')
 # logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)
 # logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
@@ -180,7 +180,7 @@ elif st.session_state['source']=="Document Q&A":
                         st.write("- "+f.name)
                         _, extension = os.path.splitext(f.name)
                         if extension not in ['.pdf','.docx',".txt"]:
-                            st.error('Please upload a valid document , currently the supported documents are : PDFs, Docx and text files')
+                            st.error('Please upload a valid document , currently the supported documents are : PDFs, Word documents(DocX) and text files')
                             st.stop()
                         st.session_state.file_names.append(f.name.split('.')[0])
 
