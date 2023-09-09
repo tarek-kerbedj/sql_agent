@@ -12,11 +12,9 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import Bedrock
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
-
 session = boto3.Session(
         aws_access_key_id=os.getenv('Access_key_ID'),
         aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1')
-
 
 llm = Bedrock(
         model_id="anthropic.claude-v2"
@@ -105,4 +103,3 @@ def generate_answer(prompt,files):
     pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}))
     answer = pdfqa({"question": prompt,"chat_history":st.session_state.chat_his})
     return answer['answer']
-
