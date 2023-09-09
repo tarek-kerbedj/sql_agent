@@ -12,11 +12,15 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import Bedrock
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
+client = boto3.client(
+    'bedrock',
+    region_name='us-east-1'
+)
 session = boto3.Session(
         aws_access_key_id=os.getenv('Access_key_ID'),
         aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1')
 
-llm = Bedrock(
+llm = Bedrock(credentials_profile_name="default",
         model_id="anthropic.claude-v2"
     )
 # initialize the LLM

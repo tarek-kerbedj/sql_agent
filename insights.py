@@ -20,13 +20,17 @@ import logging
 import boto3
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 logger=setup_logger()
+client = boto3.client(
+    'bedrock',
+    region_name='us-east-1'
+)
 session = boto3.Session(
         aws_access_key_id=os.getenv('Access_key_ID'),
         aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1'
     )
 #os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
 #resp=ChatOpenAI(temperature=0)
-resp = Bedrock(
+resp = Bedrock(credentials_profile_name="default",
         model_id="anthropic.claude-v2"
     )
 
