@@ -21,7 +21,7 @@ session = boto3.Session(
         aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1')
 
 llm = Bedrock(credentials_profile_name="default",
-        model_id="anthropic.claude-v2"
+        model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000}
     )
 # initialize the LLM
 #if vectordb not in st.session_state:
