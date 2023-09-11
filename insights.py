@@ -38,7 +38,7 @@ if st.session_state['log']!=[] and login in['Tarek','Roland']:
 
 if files !=[]:
     documents_config(files)
-    source=st.sidebar.radio('choose a source',['Database Insights','Document Q&A','Signal Generator'])
+    source=st.sidebar.radio('choose a source',['Database Insights', 'Document Q&A (PDF, Word)','Signal Generator (XLSX)'])
     # if there are uploaded documents , let the user specify the source
     if source:
         st.session_state['source']=source
