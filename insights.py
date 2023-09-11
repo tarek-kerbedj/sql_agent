@@ -31,7 +31,7 @@ session = boto3.Session(
 #os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
 #resp=ChatOpenAI(temperature=0)
 resp = Bedrock(credentials_profile_name="default",
-        model_id="anthropic.claude-v2"
+        model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000}
     )
 
 # file_path = "/home/test.txt"
