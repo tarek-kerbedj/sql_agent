@@ -12,23 +12,31 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import Bedrock
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
-client = boto3.client(
-    'bedrock',
-    region_name='us-east-1'
-)
-session = boto3.Session(
-        aws_access_key_id=os.getenv('Access_key_ID'),
-        aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1')
+@st.cache_resource(show_spinner=False)
+def connect_to_api():
 
-llm = Bedrock(credentials_profile_name="default",
-        model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000}
+    client = boto3.client(
+        'bedrock',
+        region_name='us-east-1'
     )
+    session = boto3.Session(
+            aws_access_key_id=os.getenv('Access_key_ID'),
+            aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1'
+        )
+    #os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
+    #resp=ChatOpenAI(temperature=0)
+    resp = Bedrock(credentials_profile_name="default",
+            model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000}
+        )
+    return resp
+#llm=connect_to_api()
+
 # initialize the LLM
 #if vectordb not in st.session_state:
        # st.session_state.vectordb={}
 if "file_name" not in st.session_state:
     st.session_state.file_name=""
-#llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",request_timeout=120)
+llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",request_timeout=120)
 
 def generate_summary(files):
     """
@@ -40,7 +48,7 @@ def generate_summary(files):
  
     #summary_chain = load_summarize_chain(llm=llm,chain_type="stuff")
     map_reduce = load_summarize_chain(llm=llm,
-                                     chain_type='map_reduce',
+                                     chain_type='stuff',
                                     )
     docs=[]
 

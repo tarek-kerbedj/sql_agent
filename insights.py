@@ -20,19 +20,25 @@ import logging
 import boto3
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 logger=setup_logger()
-client = boto3.client(
-    'bedrock',
-    region_name='us-east-1'
-)
-session = boto3.Session(
-        aws_access_key_id=os.getenv('Access_key_ID'),
-        aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1'
-    )
-#os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
-#resp=ChatOpenAI(temperature=0)
-resp = Bedrock(credentials_profile_name="default",
-        model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000}
-    )
+
+# @st.cache_resource(show_spinner=False)
+# def connect_to_api():
+
+#     client = boto3.client(
+#         'bedrock',
+#         region_name='us-east-1'
+#     )
+#     session = boto3.Session(
+#             aws_access_key_id=os.getenv('Access_key_ID'),
+#             aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1'
+#         )
+#     #os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
+#     #resp=ChatOpenAI(temperature=0)
+#     resp = Bedrock(credentials_profile_name="default",
+#             model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000}
+#         )
+#     return resp
+resp=connect_to_api()
 
 # file_path = "/home/test.txt"
 # with open(file_path, 'w') as file:
@@ -191,7 +197,7 @@ elif st.session_state['source']=="Document Q&A":
                     st.session_state.file_names=[]
                     st.write('Summarizing the file(s) below...')
                     for f in st.session_state.uploaded_files:
-                        st.write("- "+f.name)
+                        st.write(f"-Filename:  **{f.name}**")
                         _, extension = os.path.splitext(f.name)
                         if extension not in ['.pdf','.docx',".txt"]:
                             st.error('Please upload a valid document , currently the supported documents are : PDFs, Word documents(DocX) and text files')
