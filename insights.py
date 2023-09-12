@@ -220,9 +220,9 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
                     t1=perf_counter()
                     full_response="\n\n\n\n **Summary**:".join(generate_summary(files_to_summarize))
                     t2=perf_counter()
-                    st.write(f"response time : {t2-t1:.2f} seconds")
-                    #st.write("**Summary**:")
-                    full_response="**Summary**:"+full_response
+                    st.write(f"response time : **{t2-t1:.2f}** seconds")
+                    st.write("**Summary**:")
+                    
                     st.markdown(full_response,unsafe_allow_html=True)
                 
                     if len(files_to_summarize)>1:                
