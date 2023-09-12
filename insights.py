@@ -40,6 +40,7 @@ logger=setup_logger()
 #     return resp
 resp=connect_to_api()
 
+
 # file_path = "/home/test.txt"
 # with open(file_path, 'w') as file:
 #     file.write("Hello, World!")
@@ -188,6 +189,7 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
                 st.markdown(full_response)
     
             else:
+                
                 if (st.session_state.uploaded_files)==[]:
                     full_response=('Please make sure to upload a document before proceeding')
                     st.write(full_response)
@@ -195,28 +197,42 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
                     
                     st.session_state.summaries=[]
                     st.session_state.file_names=[]
-                    st.write('Summarizing the file(s) below...')
-
+                    files_to_summarize=[]
                     for f in st.session_state.uploaded_files:
+                        fname, extension = os.path.splitext(f.name)
+                    
+                        if fname in prompt:
+                            files_to_summarize.append(f)
+                            st.write(fname)
+               
+                    st.write('Summarizing the file(s) below...')
+                    if files_to_summarize==[]:
+                        files_to_summarize=st.session_state.uploaded_files
+                    else:
+                        pass
+                    for f in files_to_summarize:
                         st.write(f"- Filename:  **{f.name}**")
                         _, extension = os.path.splitext(f.name)
                         if extension not in ['.pdf','.docx',".txt"]:
                             st.error('Please upload a valid document , currently the supported documents are : PDFs, Word documents(DocX) and text files')
                             st.stop()
                         st.session_state.file_names.append(f.name.split('.')[0])
-
-                    full_response="\n\n\n\n".join(generate_summary(st.session_state.uploaded_files))
-                    st.write("**Summary**:")
+                    t1=perf_counter()
+                    full_response="\n\n\n\n **Summary**:".join(generate_summary(files_to_summarize))
+                    t2=perf_counter()
+                    st.write(f"summarization took {t2-t1} seconds")
+                    #st.write("**Summary**:")
+                    full_response="**Summary**:"+full_response
                     st.markdown(full_response,unsafe_allow_html=True)
-    
-                    if len(st.session_state.uploaded_files)>1:                
+                
+                    if len(files_to_summarize)>1:                
                         st.download_button(
                         label="Download summary",
                         data=summary_download(),
                         file_name='summary.zip',
                         mime='application/zip',help="download summary/summaries in a PDF Format ",
                         )
-                    elif len(st.session_state.uploaded_files)==1:
+                    elif len(files_to_summarize)==1:
             
                         st.download_button(
                         label="Download summary",
