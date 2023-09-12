@@ -220,7 +220,7 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
                     t1=perf_counter()
                     full_response="\n\n\n\n **Summary**:".join(generate_summary(files_to_summarize))
                     t2=perf_counter()
-                    st.write(f"summarization took {t2-t1} seconds")
+                    st.write(f"response time : {t2-t1:.2f} seconds")
                     #st.write("**Summary**:")
                     full_response="**Summary**:"+full_response
                     st.markdown(full_response,unsafe_allow_html=True)
@@ -276,7 +276,7 @@ elif st.session_state['source']=="Signal Generator (xlsx)":
             New human question: {question}
             Response:"""
             temp = PromptTemplate.from_template(template)
-            if check_for_keywords(prompt,"Signals")==False:
+            if check_for_keywords(prompt,"Signals")==True:
                 conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
                 signals='\n\n'.join(df[0])
                 with get_openai_callback() as cb:
