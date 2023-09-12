@@ -162,7 +162,7 @@ if st.session_state.source=="Database Insights":
                 
     
         st.session_state.messages.append({"role": "assistant", "content": full_response})
-elif st.session_state['source']=="Document Q&A":
+elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
     show_messages(st.session_state.messages)
     st.session_state.uploaded_files=files
     if prompt := st.chat_input(""):
@@ -196,8 +196,9 @@ elif st.session_state['source']=="Document Q&A":
                     st.session_state.summaries=[]
                     st.session_state.file_names=[]
                     st.write('Summarizing the file(s) below...')
+
                     for f in st.session_state.uploaded_files:
-                        st.write(f"-Filename:  **{f.name}**")
+                        st.write(f"- Filename:  **{f.name}**")
                         _, extension = os.path.splitext(f.name)
                         if extension not in ['.pdf','.docx',".txt"]:
                             st.error('Please upload a valid document , currently the supported documents are : PDFs, Word documents(DocX) and text files')
@@ -205,6 +206,7 @@ elif st.session_state['source']=="Document Q&A":
                         st.session_state.file_names.append(f.name.split('.')[0])
 
                     full_response="\n\n\n\n".join(generate_summary(st.session_state.uploaded_files))
+                    st.write("**Summary**:")
                     st.markdown(full_response,unsafe_allow_html=True)
     
                     if len(st.session_state.uploaded_files)>1:                
@@ -224,7 +226,7 @@ elif st.session_state['source']=="Document Q&A":
                         )
                 
             st.session_state.messages.append({"role": "assistant", "content": full_response})
-elif st.session_state['source']=="Signal Generator":
+elif st.session_state['source']=="Signal Generator (xlsx)":
     
     show_messages(st.session_state.messages)
     st.session_state.uploaded_files=files

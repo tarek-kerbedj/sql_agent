@@ -47,14 +47,14 @@ def generate_summary(files):
     parsed_files=[parse_uploaded_file(f) for f in files]
  
     #summary_chain = load_summarize_chain(llm=llm,chain_type="stuff")
-    map_reduce = load_summarize_chain(llm=llm,
+    stuff= load_summarize_chain(llm=llm,
                                      chain_type='stuff',
                                     )
     docs=[]
 
     for f in parsed_files:
 
-        summary=map_reduce.run(text_to_docs(f))
+        summary=stuff.run(text_to_docs(f))
    
         st.session_state.summaries.append(summary)
     return st.session_state.summaries
