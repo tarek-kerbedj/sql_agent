@@ -84,8 +84,8 @@ def check_for_keywords(text, flag):
     patterns = {
         "summary": r'\b(summary|summarize|summarization|summarize[sd]|summarizing)\b',
         "visuals": r'\b(Plot|visualize|visualization|Draw|Graph[s]|Chart[s]|Line plot|Bar chart|Pie chart)\b',
-        "emails": r'\b(email)\b',
-        "Signals": r'\bsignal[s]?\b'
+        "emails": r'\b(email|emial|emmail|emaill)\b',
+        "Signals": r'\bsignal[s]?\b|singal[s]|sginal[s]'
     }
 
     pattern = patterns.get(flag)

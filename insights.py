@@ -19,44 +19,18 @@ from langchain.llms import Bedrock
 import logging
 import boto3
 from opencensus.ext.azure.log_exporter import AzureLogHandler
+#create the logging object that connects to azure logging
 logger=setup_logger()
-
-# @st.cache_resource(show_spinner=False)
-# def connect_to_api():
-
-#     client = boto3.client(
-#         'bedrock',
-#         region_name='us-east-1'
-#     )
-#     session = boto3.Session(
-#             aws_access_key_id=os.getenv('Access_key_ID'),
-#             aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1'
-#         )
-#     #os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
-#     #resp=ChatOpenAI(temperature=0)
-#     resp = Bedrock(credentials_profile_name="default",
-#             model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000}
-#         )
-#     return resp
+# connects to Bedrock API
 resp=connect_to_api()
 
-
-# file_path = "/home/test.txt"
-# with open(file_path, 'w') as file:
-#     file.write("Hello, World!")
-# isFile = os.path.isfile(file_path)
-# if isFile:
-#     st.write('File does exist')
-# else:
-#     st.write('File does not exist')
-# logging.basicConfig(level=logging.INFO)
-# logger = logging.getLogger(__name__)
-# logger.addHandler(AzureLogHandler(connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')))
-
+# initialize the different session state variables
 load_config()
+# style elements including the logo and header
 header("forward_lane_icon.png","Insights")
 files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','xlsx'])
 login=st.text_input('Insert a username')
+
 # admin logs
 if st.session_state['log']!=[] and login in['Tarek','Roland']:
     st.download_button(
@@ -80,10 +54,11 @@ else:
 login_config(login)
 
 if st.session_state.source=="Database Insights":
+    #initiate the database sqlchain
     db_chain=load_db()
         
     show_messages(st.session_state.messages)   
-    
+    # input check
     if prompt := st.chat_input(""):
         if prompt.strip()=="":
             st.error('Please specify a query in order to proceed')
@@ -283,7 +258,6 @@ elif st.session_state['source']=="Signal Generator (xlsx)":
                         t1=perf_counter()
                         st_callback = StreamlitCallbackHandler(st.container())
                         full_response=conversation({"question":f'{prompt} , these are some signals for customers that should serve as an example : {signals}. makes sure that you use the same format , without any explanations . dont include the signals that i listed'})['text']
-                #full_response=resp.predict(f'You are an asset manager and these are some signals for customers {signals}. Can you generate a few more in the same format , without any explanations')
                         t2=perf_counter()
                 st.markdown(full_response)
                 total_cost,total_tokens=cb.total_cost,cb.total_tokens

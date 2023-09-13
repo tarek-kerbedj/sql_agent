@@ -14,7 +14,7 @@ from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
 @st.cache_resource(show_spinner=False)
 def connect_to_api():
-
+    """connects to Amazon Bedrock API using the credentials provided in the environment variables and returns the LLM object"""
     client = boto3.client(
         'bedrock',
         region_name='us-east-1'
@@ -23,8 +23,7 @@ def connect_to_api():
             aws_access_key_id=os.getenv('Access_key_ID'),
             aws_secret_access_key=os.getenv('Secret_access_key'),region_name='us-east-1'
         )
-    #os.environ["OPENAI_API_Key"]=os.getenv('OPENAI_API_KEY')
-    #resp=ChatOpenAI(temperature=0)
+  
     resp = Bedrock(credentials_profile_name="default",
             model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000}
         )
