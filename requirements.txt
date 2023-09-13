@@ -15,6 +15,8 @@ pyyaml
 opencensus-ext-azure
 transformers
 pandas==2.0.1
+cassandra-driver==3.28.0
+cassio==0.1.1
 ./wheels/boto3-1.28.21-py3-none-any.whl
 ./wheels/botocore-1.31.21-py3-none-any.whl
 
