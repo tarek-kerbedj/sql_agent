@@ -27,7 +27,7 @@ resp=connect_to_api()
 # initialize the different session state variables
 load_config()
 # style elements including the logo and header
-header("others/images/forward_lane_icon.png","Insights")
+header("other/images/forward_lane_icon.png","Insights")
 files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','xlsx'])
 login=st.text_input('Insert a username')
 

@@ -12,7 +12,7 @@ import streamlit as st
 import pandas as pd
 import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
-logins=pd.read_csv('others/credentials/logins.csv')
+logins=pd.read_csv('other/credentials/logins.csv')
 
 def setup_logger():
     """this function initializes a logger and adds the azure handler so the logs can be streamlined to Application insights
