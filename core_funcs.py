@@ -16,8 +16,8 @@ from langchain.vectorstores.cassandra import Cassandra
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
 import json
-ASTRA_DB_KEYSPACE = os.getenv('ASTRA_DB_KEYSPACE')
-
+#ASTRA_DB_KEYSPACE = os.getenv('ASTRA_DB_KEYSPACE')
+ASTRA_DB_KEYSPACE = "test_gen_ai"
 @st.cache_resource(show_spinner=False)
 def session():
     cloud_config= {
@@ -139,6 +139,6 @@ def generate_answer(prompt,files):
     
         
     # generate the answer
-    pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}))
+    pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}), max_tokens_limit=16380)
     answer = pdfqa({"question": prompt,"chat_history":st.session_state.chat_his})
     return answer['answer']
