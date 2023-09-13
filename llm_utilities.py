@@ -25,7 +25,7 @@ resp= Bedrock(credentials_profile_name="default",
       model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000})
 @st.cache_data
 def load_yaml():
-    with open(f'prompts.yaml','r') as f:
+    with open(f'others/prompts/prompts.yaml','r') as f:
         output = yaml.safe_load(f)
         return output
 output=load_yaml()
