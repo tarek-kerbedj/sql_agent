@@ -21,8 +21,9 @@ client = boto3.client(
 session = boto3.Session(
         aws_access_key_id=os.getenv('Access_key_ID'),aws_secret_access_key=os.getenv('Secret_access_key'), region_name='us-east-1')
 
-resp= Bedrock(credentials_profile_name="default",
-      model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000})
+#resp= Bedrock(credentials_profile_name="default",
+ #     model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000})
+resp=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
 @st.cache_data
 def load_yaml():
     with open(f'other/prompts/prompts.yaml','r') as f:

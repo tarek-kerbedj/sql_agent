@@ -222,7 +222,7 @@ def parse_csv(file):
 def check_csv_files(file_list):
     """Check if all files in the list are CSV files"""
     for file in file_list:
-        _, file_extension = os.path.splitext(file)
+        _, file_extension = os.path.splitext(file.name)
         if file_extension != '.csv':
             return False
     return True

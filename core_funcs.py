@@ -59,8 +59,8 @@ def connect_to_api():
 
 if "file_name" not in st.session_state:
     st.session_state.file_name=""
-llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",request_timeout=120)
-
+#llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",request_timeout=120)
+llm=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
 def generate_summary(files):
     """
     this function will summarize the documents after parsing them and loading the approrpiate summarizing chain

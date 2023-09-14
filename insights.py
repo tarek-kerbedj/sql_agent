@@ -22,8 +22,8 @@ from opencensus.ext.azure.log_exporter import AzureLogHandler
 #create the logging object that connects to azure logging
 logger=setup_logger()
 # connects to Bedrock API
-resp=connect_to_api()
-
+#resp=connect_to_api()
+resp=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
 # initialize the different session state variables
 load_config()
 # style elements including the logo and header
@@ -159,8 +159,6 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
                         full_response=csv_conversation({"question":f' given this list of CSVs  \n :{dataframes[0:min(3,len(st.session_state.uploaded_files))]} ,{prompt} '})['text']
                 else:
 
-
-
                     with get_openai_callback() as cb:
                             t1=perf_counter()
                             st_callback = StreamlitCallbackHandler(st.container())
@@ -251,14 +249,14 @@ elif st.session_state['source']=="Signal Generator (xlsx)":
         with st.chat_message("assistant",avatar='https://i.ibb.co/23kfBNr/Forwardlane-chat.png'):
             message_placeholder = st.empty()
             full_response = "" 
-            # template = """You are a nice chatbot having a conversation with a human.
+            template = """You are a nice chatbot having a conversation with a human.
 
             # Previous conversation:
             # {chat_history}
 
             # New human question: {question}
             # Response:"""
-            # temp = PromptTemplate.from_template(template)
+            temp = PromptTemplate.from_template(template)
             #if check_for_keywords(prompt,"Signals")==True:
             conversation=signal_generator()
             #conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
