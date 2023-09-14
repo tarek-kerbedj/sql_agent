@@ -150,13 +150,23 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
             st.markdown(prompt)
         with st.chat_message("assistant",avatar="https://i.ibb.co/23kfBNr/Forwardlane-chat.png"):
             message_placeholder = st.empty()
-            full_response = "" 
+            full_response = ""
+            template = """You are a nice chatbot having a conversation with a human.
+
+            Previous conversation:
+            {chat_history}
+
+            New human question: {question}
+            Response:"""
+            temp = PromptTemplate.from_template(template) 
             if check_for_keywords(prompt,"summary")==False:
                 if check_csv_files(st.session_state.uploaded_files)==True:
                     if len(st.session_state.uploaded_files)>0:
                         dataframes=[parse_csv(f) for f in st.session_state.uploaded_files]
-                        csv_conversation= LLMChain(llm=resp,verbose=True,memory=st.session_state.csv_memory)
+                        csv_conversation= LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.csv_memory)
                         full_response=csv_conversation({"question":f' given this list of CSVs  \n :{dataframes[0:min(3,len(st.session_state.uploaded_files))]} ,{prompt} '})['text']
+                        st.markdown(full_response)
+                        st.session_state.chat_his.append((prompt,full_response))
                 else:
 
                     with get_openai_callback() as cb:
@@ -249,14 +259,14 @@ elif st.session_state['source']=="Signal Generator (xlsx)":
         with st.chat_message("assistant",avatar='https://i.ibb.co/23kfBNr/Forwardlane-chat.png'):
             message_placeholder = st.empty()
             full_response = "" 
-            template = """You are a nice chatbot having a conversation with a human.
+            # template = """You are a nice chatbot having a conversation with a human.
 
-            # Previous conversation:
-            # {chat_history}
+            # # Previous conversation:
+            # # {chat_history}
 
-            # New human question: {question}
-            # Response:"""
-            temp = PromptTemplate.from_template(template)
+            # # New human question: {question}
+            # # Response:"""
+            #temp = PromptTemplate.from_template(template)
             #if check_for_keywords(prompt,"Signals")==True:
             conversation=signal_generator()
             #conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
