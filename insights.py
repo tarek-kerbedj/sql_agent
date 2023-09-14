@@ -28,7 +28,7 @@ resp=connect_to_api()
 load_config()
 # style elements including the logo and header
 header("other/images/forward_lane_icon.png","Insights")
-files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','xlsx'])
+files=st.sidebar.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','xlsx','csv'])
 login=st.text_input('Insert a username')
 
 # admin logs
@@ -152,16 +152,25 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
             message_placeholder = st.empty()
             full_response = "" 
             if check_for_keywords(prompt,"summary")==False:
-                with get_openai_callback() as cb:
-                        t1=perf_counter()
-                        st_callback = StreamlitCallbackHandler(st.container())
-                        full_response=generate_answer(prompt,st.session_state.uploaded_files)
-                        t2=perf_counter()
-                total_cost,total_tokens=cb.total_cost,cb.total_tokens
-                st.session_state['log'].append((prompt,"Document Q&A",total_cost,total_tokens,t2-t1))
-                logger.info('Task completed', extra={"custom_dimensions":{'TaskType': 'Document_Q&A', 'Price': f'${total_cost:.3f}','Tokens': f'{total_tokens:.3f}','Time': f'{t2-t1:.3f}'}})
-                st.session_state.chat_his.append((prompt,full_response))
-                st.markdown(full_response)
+                if check_csv_files(st.session_state.uploaded_files)==True:
+                    if len(st.session_state.uploaded_files)>0:
+                        dataframes=[parse_csv(f) for f in st.session_state.uploaded_files]
+                        csv_conversation= LLMChain(llm=resp,verbose=True,memory=st.session_state.csv_memory)
+                        full_response=csv_conversation({"question":f' given this list of CSVs  \n :{dataframes[0:min(3,len(st.session_state.uploaded_files))]} ,{prompt} '})['text']
+                else:
+
+
+
+                    with get_openai_callback() as cb:
+                            t1=perf_counter()
+                            st_callback = StreamlitCallbackHandler(st.container())
+                            full_response=generate_answer(prompt,st.session_state.uploaded_files)
+                            t2=perf_counter()
+                    total_cost,total_tokens=cb.total_cost,cb.total_tokens
+                    st.session_state['log'].append((prompt,"Document Q&A",total_cost,total_tokens,t2-t1))
+                    logger.info('Task completed', extra={"custom_dimensions":{'TaskType': 'Document_Q&A', 'Price': f'${total_cost:.3f}','Tokens': f'{total_tokens:.3f}','Time': f'{t2-t1:.3f}'}})
+                    st.session_state.chat_his.append((prompt,full_response))
+                    st.markdown(full_response)
     
             else:
                 

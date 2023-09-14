@@ -8,6 +8,7 @@ from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter,RecursiveCharacterTextSplitter
 from langchain.memory import ConversationBufferMemory
 from fpdf import FPDF
+from io import StringIO
 import streamlit as st
 import pandas as pd
 import logging
@@ -58,6 +59,9 @@ def load_config():
         st.session_state['log'].append(('Prompt','Operation','Cost($)','Number of tokens','time taken(s)'))
     if "signal_history" not in st.session_state:
         st.session_state['memory'] = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+    if "csv_memory" not in st.session_state:
+        st.session_state['csv_memory'] = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
     if "info" not in st.session_state:
         st.session_state['info']=[]
     if "source" not in st.session_state:
@@ -208,6 +212,20 @@ def chat_history_download(history):
     pdf_content = pdf.output(dest='S').encode('latin1')
 
     return pdf_content
+@st.cache_data
+def parse_csv(file):
+    """this function will parse uploaded csv file"""
+    stringio = StringIO(file.getvalue().decode("utf-8"))
+    df = pd.read_csv(stringio)
+    stringed_data=df.to_string()
+    return stringed_data
+def check_csv_files(file_list):
+    """Check if all files in the list are CSV files"""
+    for file in file_list:
+        _, file_extension = os.path.splitext(file)
+        if file_extension != '.csv':
+            return False
+    return True
 
 @st.cache_data
 def parse_txt(file):
@@ -228,8 +246,10 @@ def parse_uploaded_file(file):
         parsed_files = parse_pdf(file)
     elif file.name.endswith('.docx'):
         parsed_files = parse_docx(file)
-    else:
+    elif file.name.endswith('.txt'):
         parsed_files=parse_txt(file)
+    else:
+        parsed_files=parse_csv(file)
     return parsed_files
 
 @st.cache_data
