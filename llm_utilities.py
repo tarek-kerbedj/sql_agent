@@ -14,12 +14,12 @@ import plotly.graph_objects as go
 from langchain.llms import Bedrock
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
-client = boto3.client(
-    'bedrock',
-    region_name='us-east-1'
-)
-session = boto3.Session(
-        aws_access_key_id=os.getenv('Access_key_ID'),aws_secret_access_key=os.getenv('Secret_access_key'), region_name='us-east-1')
+# client = boto3.client(
+#     'bedrock',
+#     region_name='us-east-1'
+# )
+# session = boto3.Session(
+#         aws_access_key_id=os.getenv('Access_key_ID'),aws_secret_access_key=os.getenv('Secret_access_key'), region_name='us-east-1')
 
 #resp= Bedrock(credentials_profile_name="default",
  #     model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000})

@@ -6,7 +6,7 @@ import docx2txt
 from pypdf import PdfReader
 from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter,RecursiveCharacterTextSplitter
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferMemory,ConversationBufferWindowMemory
 from fpdf import FPDF
 from io import StringIO
 import streamlit as st
@@ -60,7 +60,7 @@ def load_config():
     if "signal_history" not in st.session_state:
         st.session_state['memory'] = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     if "csv_memory" not in st.session_state:
-        st.session_state['csv_memory'] = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+        st.session_state['csv_memory'] = ConversationBufferWindowMemory(k=4,memory_key="chat_history", return_messages=True)
 
     if "info" not in st.session_state:
         st.session_state['info']=[]

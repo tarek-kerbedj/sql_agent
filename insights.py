@@ -18,6 +18,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.llms import Bedrock
 import logging
 import boto3
+from openai.error import RateLimitError
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 #create the logging object that connects to azure logging
 logger=setup_logger()
@@ -151,7 +152,7 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
         with st.chat_message("assistant",avatar="https://i.ibb.co/23kfBNr/Forwardlane-chat.png"):
             message_placeholder = st.empty()
             full_response = ""
-            template = """You are a nice chatbot having a conversation with a human.
+            template = """You are a nice chatbot with access to csv files, having a conversation with a human and helping him out analyze and understand these documents.
 
             Previous conversation:
             {chat_history}
@@ -163,10 +164,14 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
                 if check_csv_files(st.session_state.uploaded_files)==True:
                     if len(st.session_state.uploaded_files)>0:
                         dataframes=[parse_csv(f) for f in st.session_state.uploaded_files]
-                        csv_conversation= LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.csv_memory)
-                        full_response=csv_conversation({"question":f' given this list of CSVs  \n :{dataframes[0:min(3,len(st.session_state.uploaded_files))]} ,{prompt} '})['text']
-                        st.markdown(full_response)
-                        st.session_state.chat_his.append((prompt,full_response))
+                        try:
+                            csv_conversation= LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.csv_memory)
+                            full_response=csv_conversation({"question":f' given this list of CSVs  \n :{dataframes[0:min(3,len(st.session_state.uploaded_files))]} ,{prompt} '})['text']
+                            st.markdown(full_response)
+                            st.session_state.chat_his.append((prompt,full_response))
+                        except RateLimitError as e:
+                            st.error('OpenAI rate limit reached,this is a limitation set by OpenAI itself ,please try again later')
+                       
                 else:
 
                     with get_openai_callback() as cb:
