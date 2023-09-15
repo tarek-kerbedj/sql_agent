@@ -10,6 +10,7 @@ from langchain.memory import ConversationBufferMemory,ConversationBufferWindowMe
 from fpdf import FPDF
 from io import StringIO
 import streamlit as st
+from pandas.errors import ParserError, ParserWarning
 import pandas as pd
 import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
@@ -214,10 +215,18 @@ def chat_history_download(history):
     return pdf_content
 @st.cache_data
 def parse_csv(file):
+    
     """this function will parse uploaded csv file"""
     stringio = StringIO(file.getvalue().decode("utf-8"))
-    df = pd.read_csv(stringio)
-    stringed_data=df.to_string()
+    try:
+
+        df = pd.read_csv(stringio)
+    except ParserError as e:
+        st.error('Error Parsing the csv file')
+    try:
+        stringed_data=df.to_string()
+    except:
+        st.error('Error converting the dataframe to a string')
     return stringed_data
 def check_csv_files(file_list):
     """Check if all files in the list are CSV files"""

@@ -163,7 +163,11 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
             if check_for_keywords(prompt,"summary")==False:
                 if check_csv_files(st.session_state.uploaded_files)==True:
                     if len(st.session_state.uploaded_files)>0:
-                        dataframes=[parse_csv(f) for f in st.session_state.uploaded_files]
+                        try:
+
+                            dataframes=[parse_csv(f) for f in st.session_state.uploaded_files]
+                        except:
+                            st.error("Error parsing the csv files , please make sure to upload a valid csv file")
                         try:
                             csv_conversation= LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.csv_memory)
                             full_response=csv_conversation({"question":f' given this list of CSVs  \n :{dataframes[0:min(3,len(st.session_state.uploaded_files))]} ,{prompt} '})['text']
