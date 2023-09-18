@@ -139,7 +139,7 @@ if st.session_state.source=="Database Insights":
                 
     
         st.session_state.messages.append({"role": "assistant", "content": full_response})
-elif st.session_state['source']=="Document Q&A (pdf, docx, txt)":
+elif st.session_state['source']=="Document Q&A (pdf, docx, txt, csv - upto 3)":
     show_messages(st.session_state.messages)
     st.session_state.uploaded_files=files
     if prompt := st.chat_input(""):
