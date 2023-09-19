@@ -64,7 +64,7 @@ if button1:
   
         
 elif button2:
-    st.session_state['source']="Document Q&A (pdf, docx, txt)"
+    st.session_state['source']="Document Q&A (pdf, docx, txt, csv - upto 3)"
 
 elif button3:
     st.session_state['source']="Signal Generator (xlsx)"
