@@ -24,7 +24,14 @@ from opencensus.ext.azure.log_exporter import AzureLogHandler
 logger=setup_logger()
 # connects to Bedrock API
 #resp=connect_to_api()
-resp=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
+resp= ChatOpenAI(
+        temperature=0.5,
+        model="anthropic/claude-2",
+        openai_api_key=os.getenv("openrouter"),
+        openai_api_base=OPENROUTER_API_BASE,headers={"HTTP-Referer": "http://localhost:8501/"},
+
+    )
+
 # initialize the different session state variables
 load_config()
 # style elements including the logo and header
@@ -188,6 +195,7 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt, csv - upto 3)":
                         except:
                             st.error("Error parsing the csv files , please make sure to upload a valid csv file")
                         try:
+      
                             csv_conversation= LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.csv_memory)
                             full_response=csv_conversation({"question":f' given this list of CSVs  \n :{dataframes[0:min(3,len(st.session_state.uploaded_files))]} ,{prompt} '})['text']
                             st.markdown(full_response)
