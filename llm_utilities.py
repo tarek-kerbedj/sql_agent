@@ -23,7 +23,18 @@ import boto3
 
 #resp= Bedrock(credentials_profile_name="default",
  #     model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000})
-resp=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
+#resp=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
+
+OPENROUTER_BASE = "https://openrouter.ai"
+OPENROUTER_API_BASE = f"{OPENROUTER_BASE}/api/v1"
+resp= ChatOpenAI(
+        temperature=0.5,
+        model="anthropic/claude-2",
+        openai_api_key=os.getenv("openrouter"),
+        openai_api_base=OPENROUTER_API_BASE,headers={"HTTP-Referer": "http://localhost:8501/"},
+ 
+    )
+
 @st.cache_data
 def load_yaml():
     with open(f'other/prompts/prompts.yaml','r') as f:
@@ -157,6 +168,7 @@ def signal_generator():
     """
     template=output['Signal Generator']
     temp = PromptTemplate.from_template(template)
+    
     conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
     return conversation
 @st.cache_resource(ttl=360)

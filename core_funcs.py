@@ -61,7 +61,18 @@ def connect_to_api():
 if "file_name" not in st.session_state:
     st.session_state.file_name=""
 #llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",request_timeout=120)
-llm=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
+#llm=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
+
+OPENROUTER_BASE = "https://openrouter.ai"
+OPENROUTER_API_BASE = f"{OPENROUTER_BASE}/api/v1"
+llm = ChatOpenAI(
+        temperature=0.5,
+        model="anthropic/claude-2",
+        openai_api_key=os.getenv("openrouter"),
+        openai_api_base=OPENROUTER_API_BASE,headers={"HTTP-Referer": "http://localhost:8501/"},
+ 
+    )
+
 def generate_summary(files):
     """
     this function will summarize the documents after parsing them and loading the approrpiate summarizing chain
