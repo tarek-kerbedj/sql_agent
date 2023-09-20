@@ -24,7 +24,7 @@ import boto3
 #resp= Bedrock(credentials_profile_name="default",
  #     model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000})
 #resp=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
-
+db_llm=ChatOpenAI(temperature=0.5, model_name="gpt-3.5-turbo",request_timeout=120)
 OPENROUTER_BASE = "https://openrouter.ai"
 OPENROUTER_API_BASE = f"{OPENROUTER_BASE}/api/v1"
 resp= ChatOpenAI(
@@ -192,7 +192,8 @@ def load_db():
     PROMPT = PromptTemplate(
     input_variables=["input", "table_info"], template=_DEFAULT_TEMPLATE)
     db=SQLDatabase.from_uri(os.getenv('DB_STRING'))
-    db_chain = SQLDatabaseChain.from_llm(resp, db, verbose=True,prompt=PROMPT,return_intermediate_steps=True)
+    
+    db_chain = SQLDatabaseChain.from_llm(db_llm, db, verbose=True,prompt=PROMPT,return_intermediate_steps=True)
     return db_chain
 def show_messages(messages):
     """
