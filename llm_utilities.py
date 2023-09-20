@@ -3,6 +3,7 @@ import re
 import os
 from langchain.chat_models import ChatOpenAI
 from langchain_experimental.sql import SQLDatabaseChain
+from langchain.sql_database import SQLDatabase
 import streamlit as st
 import yaml
 os.environ["DB_STRING"]=os.getenv('DB_STRING')
