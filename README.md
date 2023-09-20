@@ -22,6 +22,12 @@ This project has three main files:
 - `llm_utilities.py` : This file contains utility functions that are related to LLMs and the main functionality in general , such as parsing the output , connecting to the SQL chain etc...
 
 ## Folders
-- Databases : this folder includes the various databases used for testing purposes
+- Cassandra : this folder contains different config files for Cassandra
+- other : contains 3 subfolders
+  - images
+  - prompts
+  - credentials
+- wheels : contains the py wheels files to run Amazon Bedrock
+
 
 
