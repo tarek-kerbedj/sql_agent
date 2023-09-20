@@ -12,7 +12,7 @@ from core_funcs import  *
 from util_funcs import *
 from langchain.prompts.prompt import PromptTemplate
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
-from langchain import SQLDatabase, SQLDatabaseChain
+from langchain_experimental.sql import SQLDatabaseChain
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 from langchain.llms import Bedrock
