@@ -143,7 +143,7 @@ def generate_answer(prompt,files):
     
     pdfqa=ConversationalRetrievalChain.from_llm(conversational_llm,vectordb.as_retriever())
     try:
-
+        # pass the prompt and chat history to the conversationalchain
         answer = pdfqa({"question": prompt,"chat_history":st.session_state.chat_his[-4:]})
     except openai.error.InvalidRequestError:
         st.error('token limit reached, please refresh the page')
