@@ -53,8 +53,8 @@ def load_config():
         None
     Returns:
         None"""
-    if "vector_db" not in st.session_state:
-        st.session_state['vector_db']={}
+
+    
     if "log" not in st.session_state:
         st.session_state['log']=[]
         st.session_state['log'].append(('Prompt','Operation','Cost($)','Number of tokens','time taken(s)'))

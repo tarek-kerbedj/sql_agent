@@ -6,7 +6,6 @@ from langchain_experimental.sql import SQLDatabaseChain
 from langchain.sql_database import SQLDatabase
 import streamlit as st
 import yaml
-os.environ["DB_STRING"]=os.getenv('DB_STRING')
 from langchain.chains import LLMChain
 from langchain.prompts.prompt import PromptTemplate
 from plotly.graph_objs import Figure
@@ -14,24 +13,17 @@ import plotly.graph_objects as go
 from langchain.llms import Bedrock
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
-# client = boto3.client(
-#     'bedrock',
-#     region_name='us-east-1'
-# )
-# session = boto3.Session(
-#         aws_access_key_id=os.getenv('Access_key_ID'),aws_secret_access_key=os.getenv('Secret_access_key'), region_name='us-east-1')
 
-#resp= Bedrock(credentials_profile_name="default",
- #     model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000})
+os.environ["DB_STRING"]=os.getenv('DB_STRING')
+
+
 #resp=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
 db_llm=ChatOpenAI(temperature=0.5, model_name="gpt-3.5-turbo",request_timeout=120)
-OPENROUTER_BASE = "https://openrouter.ai"
-OPENROUTER_API_BASE = f"{OPENROUTER_BASE}/api/v1"
-resp= ChatOpenAI(
+signal_generator_llm= ChatOpenAI(
         temperature=0.5,
         model="anthropic/claude-2",
         openai_api_key=os.getenv("openrouter"),
-        openai_api_base=OPENROUTER_API_BASE,headers={"HTTP-Referer": "http://localhost:8501/"},
+        openai_api_base=os.getenv("OPENROUTER_API_BASE"),headers={"HTTP-Referer": "http://localhost:8501/"},
  
     )
 
@@ -105,24 +97,6 @@ def check_for_keywords(text, flag):
         return False
 
     return bool(re.search(pattern, text, re.IGNORECASE))
-# def check_for_keywords(text,flag):
-#     """This Function checks for certain keywords using regex"""
-#     if flag=="summary":
-#         pattern = r'\b(summary|summarize|summarization|summarize[sd]|summarizing)\b'
-       
-#     elif flag=='visuals':
-#         pattern = r'\b(Plot|visualize|visualization|Draw|Graph[s]|Chart[s]|Line plot|Bar chart|Pie chart)\b'
-     
-#     elif flag=="emails":
-#         pattern=r'\b(email)\b'
-#     elif flag=='Signals':
-#         pattern=r"b(signal[s])\b"
-
-#     match = re.search(pattern, text, re.IGNORECASE)
-#     if match:
-#         return True
-#     else:
-#         return False
 
 def clean_answer(full_response):
     """Clean and sanitize the LLM response.
@@ -151,7 +125,7 @@ def clean_answer(full_response):
     
     full_response=full_response.replace("'","")
     if re.search(r'logic|reasoning',st.session_state['prompt']):
-        result=resp.predict(f'here is a free text response generated {full_response} ,i want you to turn it into a bulletpoint list ,dont explain anything')
+        result=db_llm.predict(f'here is a free text response generated {full_response} ,i want you to turn it into a bulletpoint list ,dont explain anything')
 
         return result
     else:
@@ -169,9 +143,9 @@ def signal_generator():
     template=output['Signal Generator']
     temp = PromptTemplate.from_template(template)
     
-    conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
+    conversation = LLMChain(llm=signal_generator_llm,verbose=True,prompt=temp,memory=st.session_state.memory)
     return conversation
-@st.cache_resource(ttl=360)
+@st.cache_resource(ttl=6000)
 def load_db():
     """
     Establishes a connection to a SQL database and creates a SQLDatabaseChain instance.
