@@ -4,16 +4,13 @@ from time import perf_counter
 from llm_utilities import *
 from core_funcs import  *
 from util_funcs import *
-db_chain = load_db()
-logger=setup_logger()
-resp= ChatOpenAI(
-        temperature=0.5,
-        model="anthropic/claude-2",
-        openai_api_key=os.getenv("openrouter"),
-        openai_api_base=OPENROUTER_API_BASE,headers={"HTTP-Referer": "http://localhost:8501/"},
 
-    )
+logger=setup_logger()
+# this instance would be used to generate the graphs and draft emails
+misc_llm=ChatOpenAI(temperature=0, model_name="gpt-4",request_timeout=120)
+
 def handle_database_insights():
+    db_chain = load_db()
     show_messages(st.session_state.messages)
     if prompt := st.chat_input(""):
         if prompt.strip() == "":
@@ -37,7 +34,7 @@ def handle_database_insights():
         
                         intermediate=(intermediate["intermediate_steps"][0]['input'])
         
-                        full_response=resp.predict(f"given this answer from an SQL query {intermediate},generate and return the appropriate plotly JSON schema without any explainations or elaborations ,  here is an example for a bar chart {st.session_state.example}")
+                        full_response=misc_llm.predict(f"given this answer from an SQL query {intermediate},generate and return the appropriate plotly JSON schema without any explainations or elaborations ,  here is an example for a bar chart {st.session_state.example}")
                 
                         full_response=preprocess_visuals(full_response)
                         t2=perf_counter()
@@ -61,7 +58,7 @@ def handle_database_insights():
                             st_callback = StreamlitCallbackHandler(st.container())
                             t1=perf_counter()
                             infos='\n'.join(st.session_state.info[-2:])
-                            full_response=resp.predict(f"given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the links in this format [here](link)")
+                            full_response=misc_llm.predict(f"given this information about a client {infos} generate me a concise email that doesnt exceed 125 words .dont include any numerical scores. dont forget to include the links in this format [here](link)")
                             t2=perf_counter()
 
                         total_cost,total_tokens=cb.total_cost,cb.total_tokens

@@ -54,7 +54,7 @@ def load_config():
     Returns:
         None"""
 
-    
+
     if "log" not in st.session_state:
         st.session_state['log']=[]
         st.session_state['log'].append(('Prompt','Operation','Cost($)','Number of tokens','time taken(s)'))
@@ -62,6 +62,8 @@ def load_config():
         st.session_state['memory'] = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     if "csv_memory" not in st.session_state:
         st.session_state['csv_memory'] = ConversationBufferWindowMemory(k=4,memory_key="chat_history", return_messages=True)
+    if "conversational_history" not in st.session_state:
+        st.session_state['conversational_history'] = ConversationBufferWindowMemory(k=4,memory_key="chat_history", return_messages=True)
 
     if "info" not in st.session_state:
         st.session_state['info']=[]

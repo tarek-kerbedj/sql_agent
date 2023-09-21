@@ -1,3 +1,4 @@
+import os
 import itertools
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
@@ -5,17 +6,13 @@ from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
 from langchain.chains import ConversationalRetrievalChain
 import streamlit as st
-import os
-import hashlib
 from util_funcs import text_to_docs,parse_uploaded_file
 from langchain.chat_models import ChatOpenAI
 from langchain.llms import Bedrock
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 from langchain.vectorstores.cassandra import Cassandra
-from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
-import boto3
-import json
+import openai
 #ASTRA_DB_KEYSPACE = os.getenv('ASTRA_DB_KEYSPACE')
 ASTRA_DB_KEYSPACE = "test_gen_ai"
 
@@ -143,6 +140,12 @@ def generate_answer(prompt,files):
     
         
     # generate the answer
-    pdfqa=ConversationalRetrievalChain.from_llm(conversational_llm,vectordb.as_retriever(search_kwargs={"k": 4}), max_tokens_limit=16380)
-    answer = pdfqa({"question": prompt,"chat_history":st.session_state.chat_his})
+    
+    pdfqa=ConversationalRetrievalChain.from_llm(conversational_llm,vectordb.as_retriever())
+    try:
+
+        answer = pdfqa({"question": prompt,"chat_history":st.session_state.chat_his[-4:]})
+    except openai.error.InvalidRequestError:
+        st.error('token limit reached, please refresh the page')
+
     return answer['answer']

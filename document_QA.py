@@ -15,8 +15,9 @@ csv_llm= ChatOpenAI(
     )
 def handle_document_interaction():
     files=st.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','csv'],key=1)
-    documents_config(files)
-        
+    show_messages(st.session_state.messages)
+    #documents_config(files)
+    
     if prompt := st.chat_input(""):
             if prompt.strip() == "":
                 st.error('Please specify a query in order to proceed')
