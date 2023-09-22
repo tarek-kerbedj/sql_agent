@@ -6,7 +6,6 @@ from langchain_experimental.sql import SQLDatabaseChain
 from langchain.sql_database import SQLDatabase
 import streamlit as st
 import yaml
-os.environ["DB_STRING"]=os.getenv('DB_STRING')
 from langchain.chains import LLMChain
 from langchain.prompts.prompt import PromptTemplate
 from plotly.graph_objs import Figure
@@ -14,13 +13,8 @@ import plotly.graph_objects as go
 from langchain.llms import Bedrock
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
-# client = boto3.client(
-#     'bedrock',
-#     region_name='us-east-1'
-# )
-# session = boto3.Session(
-#         aws_access_key_id=os.getenv('Access_key_ID'),aws_secret_access_key=os.getenv('Secret_access_key'), region_name='us-east-1')
 
+os.environ["DB_STRING"]=os.getenv('DB_STRING')
 #resp= Bedrock(credentials_profile_name="default",
  #     model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000})
 #resp=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
@@ -105,24 +99,6 @@ def check_for_keywords(text, flag):
         return False
 
     return bool(re.search(pattern, text, re.IGNORECASE))
-# def check_for_keywords(text,flag):
-#     """This Function checks for certain keywords using regex"""
-#     if flag=="summary":
-#         pattern = r'\b(summary|summarize|summarization|summarize[sd]|summarizing)\b'
-       
-#     elif flag=='visuals':
-#         pattern = r'\b(Plot|visualize|visualization|Draw|Graph[s]|Chart[s]|Line plot|Bar chart|Pie chart)\b'
-     
-#     elif flag=="emails":
-#         pattern=r'\b(email)\b'
-#     elif flag=='Signals':
-#         pattern=r"b(signal[s])\b"
-
-#     match = re.search(pattern, text, re.IGNORECASE)
-#     if match:
-#         return True
-#     else:
-#         return False
 
 def clean_answer(full_response):
     """Clean and sanitize the LLM response.

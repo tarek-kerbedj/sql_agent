@@ -1,9 +1,9 @@
 import streamlit as st
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 from time import perf_counter
-from llm_utilities import *
-from core_funcs import  *
-from util_funcs import *
+from utils.llm_utilities import *
+from utils.core_funcs import  *
+from utils.util_funcs import *
 logger=setup_logger()
 USER_AVATAR = "https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png"
 ASSISTANT_AVATAR ="https://i.ibb.co/23kfBNr/Forwardlane-chat.png"
@@ -11,9 +11,9 @@ csv_llm= ChatOpenAI(
         temperature=0.5,
         model="anthropic/claude-2",
         openai_api_key=os.getenv("openrouter"),
-        openai_api_base=os.getenv("OPENROUTER_API_BASE"),headers={"HTTP-Referer": "http://localhost:8501/"},
+        openai_api_base=os.getenv("OPENROUTER_API_BASE"),headers={"HTTP-Referer": "http://localhost:8501/"},)
  
-def handle_documents():
+def handle_document_interaction():
 
     files=st.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','csv'],key=1)
  
@@ -24,9 +24,9 @@ def handle_documents():
             st.error('Please specify a query in order to proceed')
             st.stop()
         st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user",avatar="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png"):
+        with st.chat_message("user",avatar=USER_AVATAR):
             st.markdown(prompt)
-        with st.chat_message("assistant",avatar="https://i.ibb.co/23kfBNr/Forwardlane-chat.png"):
+        with st.chat_message("assistant",avatar=ASSISTANT_AVATAR):
             message_placeholder = st.empty()
             full_response = ""
             template = """You are a nice chatbot with access to csv files, having a conversation with a human and helping him out analyze and understand these documents.

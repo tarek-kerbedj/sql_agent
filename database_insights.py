@@ -1,9 +1,9 @@
 import streamlit as st
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 from time import perf_counter
-from llm_utilities import *
-from core_funcs import  *
-from util_funcs import *
+from utils.llm_utilities import *
+from utils.core_funcs import  *
+from utils.util_funcs import *
 
 logger=setup_logger()
 misc_llm= ChatOpenAI(

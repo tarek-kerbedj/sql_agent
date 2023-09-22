@@ -2,16 +2,16 @@ import os
 import streamlit as st
 import pandas as pd
 from time import perf_counter
-from llm_utilities import *
-from core_funcs import  *
-from util_funcs import *
+from utils.llm_utilities import *
+from utils.core_funcs import  *
+from utils.util_funcs import *
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 logger=setup_logger()
 USER_AVATAR = "https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png"
 ASSISTANT_AVATAR ="https://i.ibb.co/23kfBNr/Forwardlane-chat.png"
 def handle_signal_generation():
     files=st.file_uploader("Choose a file",accept_multiple_files=True,type=["xlsx"],key=2)
-
+    
     show_messages(st.session_state.messages)
     st.session_state.uploaded_files=files
     for i, f in enumerate(files):

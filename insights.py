@@ -1,15 +1,14 @@
 import os
-import json
 import streamlit as st
 from langchain.chat_models import ChatOpenAI
 import plotly.graph_objects as go
-import pandas as pd
+
 from time import perf_counter
 from plotly.graph_objs import Figure
-from style import *
-from llm_utilities import *
-from core_funcs import  *
-from util_funcs import *
+from utils.style import *
+from utils.llm_utilities import *
+from utils.core_funcs import  *
+from utils.util_funcs import *
 from langchain.prompts.prompt import PromptTemplate
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 from langchain_experimental.sql import SQLDatabaseChain
@@ -90,52 +89,4 @@ elif st.session_state['source']=="Document Q&A (pdf, docx, txt, csv - upto 3)":
 
 elif st.session_state['source']=="Signal Generator (xlsx)":
     handle_signal_generation()
-    # files=st.file_uploader("Choose a file",accept_multiple_files=True,type=["xlsx"],key=2)
-    
-    # show_messages(st.session_state.messages)
-    # st.session_state.uploaded_files=files
-    
-    # for i,f in enumerate(files):
-    #     _, extension = os.path.splitext(f.name)
-    #     if extension in ['.xlsx']:
-    #         df = pd.read_excel(f,header=None)
-    #         break
-    #     if i==len(files)-1:
-    #         st.error('Please upload a valid excel file')
-    #         st.stop()
-        
-    # if prompt := st.chat_input(""):
-    #     if prompt.strip()=="":
-    #         st.error('Please specify a query in order to proceed')
-    #         st.stop()
-        
-    #     st.session_state.messages.append({"role": "user", "content": prompt})
-    #     with st.chat_message("user",avatar='https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png'):
-    #         st.markdown(prompt)
-    #     with st.chat_message("assistant",avatar='https://i.ibb.co/23kfBNr/Forwardlane-chat.png'):
-    #         message_placeholder = st.empty()
-    #         full_response = "" 
-    #         # template = """You are a nice chatbot having a conversation with a human.
 
-    #         # # Previous conversation:
-    #         # # {chat_history}
-
-    #         # # New human question: {question}
-    #         # # Response:"""
-    #         #temp = PromptTemplate.from_template(template)
-    #         #if check_for_keywords(prompt,"Signals")==True:
-    #         conversation=signal_generator()
-    #         #conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
-    #         signals='\n\n'.join(df[0])
-    #         with get_openai_callback() as cb:
-    #                 t1=perf_counter()
-    #                 st_callback = StreamlitCallbackHandler(st.container())
-    #                 full_response=conversation({"question":f'{prompt} , these are some signals for customers that should serve as an example : {signals}. makes sure that you use the same format , without any explanations . dont include the signals that i listed'})['text']
-    #                 t2=perf_counter()
-    #         st.markdown(full_response)
-    #         total_cost,total_tokens=cb.total_cost,cb.total_tokens
-    #         st.session_state['log'].append((prompt,"Signal_Generator",total_cost,total_tokens,t2-t1))
-     
-    #         logger.info('Task completed', extra={"custom_dimensions":{'TaskType': 'Signal_Generator', 'Price': f'${total_cost:.3f}','Tokens': f'{total_tokens:.3f}','Time': f'{t2-t1:.3f}'}})
-                
-    #         st.session_state.messages.append({"role": "assistant", "content": full_response})
