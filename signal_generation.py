@@ -34,17 +34,9 @@ def handle_signal_generation():
         with st.chat_message("assistant", avatar=ASSISTANT_AVATAR):
             message_placeholder = st.empty()
             full_response = "" 
-            # template = """You are a nice chatbot having a conversation with a human.
 
-            # # Previous conversation:
-            # # {chat_history}
-
-            # # New human question: {question}
-            # # Response:"""
-            #temp = PromptTemplate.from_template(template)
-            #if check_for_keywords(prompt,"Signals")==True:
             conversation=signal_generator()
-            #conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
+ 
             signals='\n\n'.join(signals_df[0])
             with get_openai_callback() as cb:
                     t1=perf_counter()

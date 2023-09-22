@@ -42,3 +42,7 @@ Wholsaler: "You are an internal fund wholesaler. Given an input question, first 
 Signal Generator: "You are a helpful chatbot having a conversation with a human.\n\
   \n            Previous conversation:\n            {chat_history}\n\n           \
   \ New human question: {question}\n            Response:"
+
+CSV HANDLING: "You are a nice chatbot with access to csv files, having a conversation with a human and helping him out analyze and understand these documents.\n\
+  \n            Previous conversation:\n            {chat_history}\n\n           \
+  \ New human question: {question}\n            Response:"

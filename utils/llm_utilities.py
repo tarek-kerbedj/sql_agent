@@ -134,6 +134,13 @@ def clean_answer(full_response):
         return full_response
 
 @st.cache_resource
+def csv_handler():
+    """creates a  csv handling LLM chain instance , with memory and prompt"""
+    template = output['CSV HANDLING']
+    temp = PromptTemplate.from_template(template)
+    csv_handling = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.csv_memory)
+    return csv_handling
+@st.cache_resource
 def signal_generator():
     """creates a signal generator LLM chain instance , with memory and prompt
     Parameters:

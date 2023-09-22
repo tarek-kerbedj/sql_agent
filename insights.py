@@ -1,14 +1,11 @@
 import os
 import streamlit as st
 from langchain.chat_models import ChatOpenAI
-import plotly.graph_objects as go
-
-from time import perf_counter
-from plotly.graph_objs import Figure
 from utils.style import *
 from utils.llm_utilities import *
 from utils.core_funcs import  *
 from utils.util_funcs import *
+
 from langchain.prompts.prompt import PromptTemplate
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 from langchain_experimental.sql import SQLDatabaseChain
@@ -17,7 +14,6 @@ from langchain.memory import ConversationBufferMemory
 from langchain.llms import Bedrock
 import logging
 import boto3
-from openai.error import RateLimitError
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 from database_insights import handle_database_insights
 from document_QA import handle_document_interaction

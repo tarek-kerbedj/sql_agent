@@ -29,14 +29,6 @@ def handle_document_interaction():
         with st.chat_message("assistant",avatar=ASSISTANT_AVATAR):
             message_placeholder = st.empty()
             full_response = ""
-            template = """You are a nice chatbot with access to csv files, having a conversation with a human and helping him out analyze and understand these documents.
-
-            Previous conversation:
-            {chat_history}
-
-            New human question: {question}
-            Response:"""
-            temp = PromptTemplate.from_template(template) 
             if check_for_keywords(prompt,"summary")==False:
                 if check_csv_files(st.session_state.uploaded_files)==True:
                     if len(st.session_state.uploaded_files)>0:
@@ -46,8 +38,8 @@ def handle_document_interaction():
                         except:
                             st.error("Error parsing the csv files , please make sure to upload a valid csv file")
                         try:
-      
-                            csv_conversation= LLMChain(llm=csv_llm,verbose=True,prompt=temp,memory=st.session_state.csv_memory)
+                            csv_conversation=csv_handler()
+                          
                             full_response=csv_conversation({"question":f' given this list of CSVs  \n :{dataframes[0:min(3,len(st.session_state.uploaded_files))]} ,{prompt} '})['text']
                             st.markdown(full_response)
                             st.session_state.chat_his.append((prompt,full_response))
