@@ -5,19 +5,14 @@ from utils.style import *
 from utils.llm_utilities import *
 from utils.core_funcs import  *
 from utils.util_funcs import *
-
-from langchain.prompts.prompt import PromptTemplate
-from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
-from langchain_experimental.sql import SQLDatabaseChain
-from langchain.chains import LLMChain
-from langchain.memory import ConversationBufferMemory
+from components.database_insights import handle_database_insights
+from components.document_QA import handle_document_interaction
+from components.signal_generation import handle_signal_generation
 from langchain.llms import Bedrock
 import logging
 import boto3
 from opencensus.ext.azure.log_exporter import AzureLogHandler
-from components.database_insights import handle_database_insights
-from components.document_QA import handle_document_interaction
-from components.signal_generation import handle_signal_generation
+
 #create the logging object that connects to azure logging
 logger=setup_logger()
 # connects to Bedrock API

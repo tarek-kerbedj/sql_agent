@@ -15,8 +15,9 @@ from langchain.vectorstores.cassandra import Cassandra
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
 import json
-#ASTRA_DB_KEYSPACE = os.getenv('ASTRA_DB_KEYSPACE')
-ASTRA_DB_KEYSPACE = "test_gen_ai"
+ASTRA_DB_KEYSPACE = os.getenv("ASTRA_DB_KEYSPACE")
+
+
 conversational_llm = ChatOpenAI(
         temperature=0.5,
         model="anthropic/claude-2",
@@ -25,7 +26,7 @@ conversational_llm = ChatOpenAI(
  
     )
 summary_llm=ChatOpenAI(
-        temperature=0.5,
+        temperature=0,
         model="anthropic/claude-2",
         openai_api_key=os.getenv("openrouter"),
         openai_api_base=os.getenv("OPENROUTER_API_BASE"),headers={"HTTP-Referer": "http://localhost:8501/"},
