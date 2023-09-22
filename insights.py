@@ -15,9 +15,9 @@ from langchain.llms import Bedrock
 import logging
 import boto3
 from opencensus.ext.azure.log_exporter import AzureLogHandler
-from database_insights import handle_database_insights
-from document_QA import handle_document_interaction
-from signal_generation import handle_signal_generation
+from components.database_insights import handle_database_insights
+from components.document_QA import handle_document_interaction
+from components.signal_generation import handle_signal_generation
 #create the logging object that connects to azure logging
 logger=setup_logger()
 # connects to Bedrock API

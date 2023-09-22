@@ -6,7 +6,6 @@ from langchain.chains.summarize import load_summarize_chain
 from langchain.chains import ConversationalRetrievalChain
 import streamlit as st
 import os
-import hashlib
 from .util_funcs import text_to_docs,parse_uploaded_file
 from langchain.chat_models import ChatOpenAI
 from langchain.llms import Bedrock
