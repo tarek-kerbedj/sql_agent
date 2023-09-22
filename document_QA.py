@@ -7,6 +7,12 @@ from util_funcs import *
 logger=setup_logger()
 USER_AVATAR = "https://creazilla-store.fra1.digitaloceanspaces.com/icons/3257916/gender-neutral-user-icon-md.png"
 ASSISTANT_AVATAR ="https://i.ibb.co/23kfBNr/Forwardlane-chat.png"
+csv_llm= ChatOpenAI(
+        temperature=0.5,
+        model="anthropic/claude-2",
+        openai_api_key=os.getenv("openrouter"),
+        openai_api_base=os.getenv("OPENROUTER_API_BASE"),headers={"HTTP-Referer": "http://localhost:8501/"},
+ 
 def handle_documents():
 
     files=st.file_uploader("Choose a file",accept_multiple_files=True,type=["pdf",'docx','txt','csv'],key=1)
@@ -41,7 +47,7 @@ def handle_documents():
                             st.error("Error parsing the csv files , please make sure to upload a valid csv file")
                         try:
       
-                            csv_conversation= LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.csv_memory)
+                            csv_conversation= LLMChain(llm=csv_llm,verbose=True,prompt=temp,memory=st.session_state.csv_memory)
                             full_response=csv_conversation({"question":f' given this list of CSVs  \n :{dataframes[0:min(3,len(st.session_state.uploaded_files))]} ,{prompt} '})['text']
                             st.markdown(full_response)
                             st.session_state.chat_his.append((prompt,full_response))

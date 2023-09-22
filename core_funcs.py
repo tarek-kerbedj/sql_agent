@@ -18,6 +18,20 @@ import boto3
 import json
 #ASTRA_DB_KEYSPACE = os.getenv('ASTRA_DB_KEYSPACE')
 ASTRA_DB_KEYSPACE = "test_gen_ai"
+conversational_llm = ChatOpenAI(
+        temperature=0.5,
+        model="anthropic/claude-2",
+        openai_api_key=os.getenv("openrouter"),
+        openai_api_base=os.getenv("OPENROUTER_API_BASE"),headers={"HTTP-Referer": "http://localhost:8501/"},
+ 
+    )
+summary_llm=ChatOpenAI(
+        temperature=0.5,
+        model="anthropic/claude-2",
+        openai_api_key=os.getenv("openrouter"),
+        openai_api_base=os.getenv("OPENROUTER_API_BASE"),headers={"HTTP-Referer": "http://localhost:8501/"},
+ 
+    )
 @st.cache_resource(show_spinner=False)
 def session():
     cloud_config= {
@@ -63,15 +77,7 @@ if "file_name" not in st.session_state:
 #llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",request_timeout=120)
 #llm=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
 
-OPENROUTER_BASE = "https://openrouter.ai"
-OPENROUTER_API_BASE = f"{OPENROUTER_BASE}/api/v1"
-llm = ChatOpenAI(
-        temperature=0.5,
-        model="anthropic/claude-2",
-        openai_api_key=os.getenv("openrouter"),
-        openai_api_base=OPENROUTER_API_BASE,headers={"HTTP-Referer": "http://localhost:8501/"},
- 
-    )
+
 
 def generate_summary(files):
     """
@@ -82,7 +88,7 @@ def generate_summary(files):
     parsed_files=[parse_uploaded_file(f) for f in files]
  
     #summary_chain = load_summarize_chain(llm=llm,chain_type="stuff")
-    stuff= load_summarize_chain(llm=llm,
+    stuff= load_summarize_chain(llm=summary_llm,
                                      chain_type='stuff',
                                     )
     docs=[]
@@ -151,6 +157,6 @@ def generate_answer(prompt,files):
     
         
     # generate the answer
-    pdfqa=ConversationalRetrievalChain.from_llm(llm,vectordb.as_retriever(search_kwargs={"k": 4}), max_tokens_limit=16380)
+    pdfqa=ConversationalRetrievalChain.from_llm(conversational_llm,vectordb.as_retriever(search_kwargs={"k": 4}))
     answer = pdfqa({"question": prompt,"chat_history":st.session_state.chat_his})
     return answer['answer']
