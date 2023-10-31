@@ -13,7 +13,8 @@ import plotly.graph_objects as go
 from langchain.llms import Bedrock
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
-
+OPENROUTER_BASE = "https://openrouter.ai"
+OPENROUTER_API_BASE = f"{OPENROUTER_BASE}/api/v1"
 os.environ["DB_STRING"]=os.getenv('DB_STRING')
 #resp= Bedrock(credentials_profile_name="default",
  #     model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000})
@@ -25,8 +26,7 @@ db_llm= ChatOpenAI(
         openai_api_base=OPENROUTER_API_BASE,headers={"HTTP-Referer": "http://localhost:8501/"},
  
     )
-OPENROUTER_BASE = "https://openrouter.ai"
-OPENROUTER_API_BASE = f"{OPENROUTER_BASE}/api/v1"
+
 resp= ChatOpenAI(
         temperature=0.5,
         model="anthropic/claude-2",
