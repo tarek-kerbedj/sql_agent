@@ -21,18 +21,12 @@ os.environ["DB_STRING"]=os.getenv('DB_STRING')
 #resp=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
 db_llm= ChatOpenAI(
         temperature=0.5,
-        model="anthropic/claude-2",
-        openai_api_key=os.getenv("openrouter"),
-        openai_api_base=OPENROUTER_API_BASE,headers={"HTTP-Referer": "http://localhost:8501/"},
- 
+        model_name="gpt-3.5-turbo",request_timeout=120
     )
 
 resp= ChatOpenAI(
-        temperature=0.5,
-        model="anthropic/claude-2",
-        openai_api_key=os.getenv("openrouter"),
-        openai_api_base=OPENROUTER_API_BASE,headers={"HTTP-Referer": "http://localhost:8501/"},
- 
+        temperature=0,  
+        model_name="gpt-3.5-turbo",request_timeout=120
     )
 
 @st.cache_data
