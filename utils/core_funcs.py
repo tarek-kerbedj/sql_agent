@@ -15,6 +15,7 @@ from langchain.vectorstores.cassandra import Cassandra
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
 import json
+from typing import List, Dict, Union
 ASTRA_DB_KEYSPACE = os.getenv("ASTRA_DB_KEYSPACE")
 
 
@@ -33,7 +34,7 @@ summary_llm=ChatOpenAI(
  
     )
 @st.cache_resource(show_spinner=False)
-def session():
+def session()->Cluster.connect:
     """creates an astraDB session object and connect to the cluster"""
     cloud_config= {
     'secure_connect_bundle': 'other/cassandra/secure-connect-test-vector-db.zip'
@@ -65,17 +66,16 @@ def connect_to_api():
             model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000}
         )
     return resp
-#llm=connect_to_api()
+
 
 
 if "file_name" not in st.session_state:
     st.session_state.file_name=""
-#llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",request_timeout=120)
-#llm=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
 
 
 
-def generate_summary(files):
+
+def generate_summary(files:List[bytes])->List[str]:
     """
     this function will summarize the documents after parsing them and loading the approrpiate summarizing chain
     Parameters:
@@ -101,7 +101,7 @@ def generate_summary(files):
 
 
 @st.cache_resource
-def  create_embs(parsed_files):
+def create_embs(parsed_files:List[List])->Cassandra:
     """ this function creates Documents from the the text, and turns them into embeddings and finally creates a conversationalChain
            Parameters:
                 parsed_files (list of lists): represents a list of the parsed documents
@@ -127,13 +127,15 @@ def  create_embs(parsed_files):
 
     return vectordb
 
-def generate_answer(prompt:str,files)->str:
-    """ this function will handle parsing the document , turning it into embeddings and the query
-         Parameters:
-                parsed_files (list of lists): represents a list of the parsed documents
-                prompt (str): the user query
-            Returns:
-                answer(str): represents the output from the LLM"""
+def generate_answer(prompt:str, files:List[bytes])->str:
+    """
+        This function will handle parsing the document, turning it into embeddings, and the query.
+        Parameters:
+            prompt (str): the user query
+            files (list of bytes): represents a list of the uploaded files
+        Returns:
+            answer(str): represents the output from the LLM
+    """
 
 
     # if the user query is empty return a warning 

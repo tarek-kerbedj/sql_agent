@@ -146,7 +146,7 @@ def create_zip(pdf_contents:List[bytes], file_names: List[str]) -> bytes:
     zip_data = zip_buffer.getvalue()
     return zip_data
 
-def summary_download():
+def summary_download()->bytes:
     """ this function creates a pdf file for each summary generated
         Parameters:
             None
