@@ -14,6 +14,7 @@ from pandas.errors import ParserError, ParserWarning
 import pandas as pd
 import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
+from typing import  bytes,List, Dict, Union
 logins=pd.read_csv('other/credentials/logins.csv')
 
 def setup_logger():
@@ -98,7 +99,7 @@ def load_config():
         }
     }    
 
-def log_download():
+def log_download()->bytes:
     """this function creates a csv that contains the logs of the different aspects of the webapp ,using the logs stored in the session state
     Parameters:
         None
@@ -110,13 +111,13 @@ def log_download():
     output = io.StringIO()
     df.to_csv(output, index=False)
     return output.getvalue().encode('utf-8-sig')
-def check_extension(file_names, target_extensions):
+def check_extension(file_names:List[str], target_extensions:List[str])-> bool:
     """
     Check if the extensions of files in the given list are different from any of the target extensions.
 
     Parameters:
-    file_names (list): A list of file names.
-    target_extensions (list): A list of target extensions to compare against.
+    file_names (list of str): A list of file names.
+    target_extensions (list of str): A list of target extensions to compare against.
 
     Returns:
     bool: True if any file has an extension different from any of the target extensions, otherwise False.
@@ -127,7 +128,7 @@ def check_extension(file_names, target_extensions):
             return True
 
     return False
-def create_zip(pdf_contents, file_names):
+def create_zip(pdf_contents:List[bytes], file_names: List[str]) -> bytes:
     """ this function creates a zip that contains PDFS
             Parameters:
                 pdf_contents (list of Bytes): represents a list of the Bytes that represent the content the PDF
@@ -184,7 +185,7 @@ def summary_download():
     else:
 
      return create_zip(pdfs,st.session_state.file_names)
-def chat_history_download(history):
+def chat_history_download(history:List[Tuple[str, str]])-> bytes:
 
     """ this function creates a PDF file that contains the chat history of the user
             Parameters:
@@ -296,13 +297,13 @@ def parse_docx(file):
     return [text]
 
 @st.cache_data
-def text_to_docs(text):
+def text_to_docs(text :Union[str, List[str]])->List[Document]:
     """Converts a string or list of strings to a list of Documents
     with metadata.
             Parameters:
-                text(str/list) : this represents the parsed file and the content of the text , it can be either a list of documents in the case
+                text(str/list) : this represents the parsed file and the content of the text , it can be either a list of documents or a str
             Returns:
-                    text(str): a string representing the content of the document"""""
+                doc_chunks(List of Document): a list of chunks """""
  
     if isinstance(text, str):
         # Take a single string as one page

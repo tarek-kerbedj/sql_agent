@@ -79,7 +79,9 @@ def generate_summary(files):
     """
     this function will summarize the documents after parsing them and loading the approrpiate summarizing chain
     Parameters:
-        Files(List): represents the raw uploaded files """
+        Files(List): represents the raw uploaded files
+    returns :
+        summaries(List): represents the summary/summaries of the documents """
    
     parsed_files=[parse_uploaded_file(f) for f in files]
  
@@ -105,7 +107,7 @@ def  create_embs(parsed_files):
                 parsed_files (list of lists): represents a list of the parsed documents
   
             Returns:
-                    vectordb (Chroma DB): chromaDB object that contains the embeddings for all of the documents"""""
+                    vectordb (CassandraDB): Cassandra object that contains the embeddings for all of the documents"""""
     
     # merge all the documents into a list
     merged_docs = list(itertools.chain(*parsed_files))
@@ -125,7 +127,7 @@ def  create_embs(parsed_files):
 
     return vectordb
 
-def generate_answer(prompt,files):
+def generate_answer(prompt:str,files)->str:
     """ this function will handle parsing the document , turning it into embeddings and the query
          Parameters:
                 parsed_files (list of lists): represents a list of the parsed documents
@@ -149,8 +151,6 @@ def generate_answer(prompt,files):
         st.error('Error parsing the file')
 
     vectordb=create_embs(parsed_files)
-
-    
         
     # generate the answer
     pdfqa=ConversationalRetrievalChain.from_llm(conversational_llm,vectordb.as_retriever(search_kwargs={"k": 4}))

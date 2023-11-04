@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 from langchain.llms import Bedrock
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
-
+from typing import List, Dict, Union
 os.environ["DB_STRING"]=os.getenv('DB_STRING')
 #resp= Bedrock(credentials_profile_name="default",
  #     model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000})
@@ -30,13 +30,21 @@ resp= ChatOpenAI(
     )
 
 @st.cache_data
-def load_yaml():
+def load_yaml() -> Dict:
+    """
+    Loads the prompts from a YAML file into a Python dictionary.
+    Parameters:
+        None
+
+    Returns:
+        dict: A Python dictionary containing the contents of the YAML file.
+    """
     with open(f'other/prompts/prompts.yaml','r') as f:
         output = yaml.safe_load(f)
         return output
 output=load_yaml()
 
-def preprocess_visuals(full_response):
+def preprocess_visuals(full_response: str) -> Figure:
     """takes a string representation of a json that contains a plotly chart and returns a plotly figure object
         Parameters:
     -----------
@@ -78,7 +86,7 @@ def preprocess_visuals(full_response):
             fig.add_trace(go.Pie(labels=y_values,values=x_values))
             fig.update_layout(title_text=title)
             return fig
-def check_for_keywords(text, flag):
+def check_for_keywords(text: str, flag: str) -> bool:
     """This Function checks for certain keywords in the user prompt using regex
     Parameters:
         text (str): The input text to be checked for keywords.
@@ -100,7 +108,7 @@ def check_for_keywords(text, flag):
 
     return bool(re.search(pattern, text, re.IGNORECASE))
 
-def clean_answer(full_response):
+def clean_answer(full_response: str) -> str:
     """Clean and sanitize the LLM response.
 
     This function takes a full_response string as input and performs the following
@@ -134,14 +142,14 @@ def clean_answer(full_response):
         return full_response
 
 @st.cache_resource
-def csv_handler():
+def csv_handler()->LLMChain:
     """creates a  csv handling LLM chain instance , with memory and prompt"""
     template = output['CSV HANDLING']
     temp = PromptTemplate.from_template(template)
     csv_handling = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.csv_memory)
     return csv_handling
 @st.cache_resource
-def signal_generator():
+def signal_generator()->LLMChain:
     """creates a signal generator LLM chain instance , with memory and prompt
     Parameters:
         None
@@ -155,17 +163,16 @@ def signal_generator():
     conversation = LLMChain(llm=resp,verbose=True,prompt=temp,memory=st.session_state.memory)
     return conversation
 @st.cache_resource(ttl=360)
-def load_db():
+def load_db()-> SQLDatabaseChain:
     """
     Establishes a connection to a SQL database and creates a SQLDatabaseChain instance.
 
-    This function takes a prompt and a database URI, creates a SQLDatabase instance using the URI, 
+    This function creates a SQLDatabase instance using the URI, 
     and then creates a SQLDatabaseChain instance using the prompt and the database.
     The SQLDatabaseChain is created with a ChatOpenAI instance with a temperature of 0.
 
     Parameters:
-        PROMPT (str): The prompt to be used for the SQLDatabaseChain.
-        uri (str): The URI of the database to connect to.
+        None
 
     Returns:
     SQLDatabaseChain: A SQLDatabaseChain instance connected to the specified database."""
@@ -178,7 +185,8 @@ def load_db():
     
     db_chain = SQLDatabaseChain.from_llm(db_llm, db, verbose=True,prompt=PROMPT,return_intermediate_steps=True)
     return db_chain
-def show_messages(messages):
+Message = Dict[str, Union[str, go.Figure]]
+def show_messages(messages: List[Message])->None:
     """
     Iterates through a list of messages and displays them in a chat format.
     Parameters:
