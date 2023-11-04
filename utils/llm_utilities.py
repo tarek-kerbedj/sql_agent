@@ -14,19 +14,20 @@ from langchain.llms import Bedrock
 from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
 import boto3
 from typing import List, Dict, Union
+OPENROUTER_BASE = "https://openrouter.ai"
+OPENROUTER_API_BASE = f"{OPENROUTER_BASE}/api/v1"
 os.environ["DB_STRING"]=os.getenv('DB_STRING')
 #resp= Bedrock(credentials_profile_name="default",
  #     model_id="anthropic.claude-v2",model_kwargs={"max_tokens_to_sample":8000})
 #resp=ChatOpenAI(temperature=0.5, model_name="gpt-4",request_timeout=120)
-db_llm=ChatOpenAI(temperature=0.5, model_name="gpt-3.5-turbo",request_timeout=120)
-OPENROUTER_BASE = "https://openrouter.ai"
-OPENROUTER_API_BASE = f"{OPENROUTER_BASE}/api/v1"
-resp= ChatOpenAI(
+db_llm= ChatOpenAI(
         temperature=0.5,
-        model="anthropic/claude-2",
-        openai_api_key=os.getenv("openrouter"),
-        openai_api_base=OPENROUTER_API_BASE,headers={"HTTP-Referer": "http://localhost:8501/"},
- 
+        model_name="gpt-3.5-turbo",request_timeout=120
+    )
+
+resp= ChatOpenAI(
+        temperature=0,  
+        model_name="gpt-3.5-turbo",request_timeout=120
     )
 
 @st.cache_data
