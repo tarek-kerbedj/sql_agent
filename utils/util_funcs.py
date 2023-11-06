@@ -14,7 +14,7 @@ from pandas.errors import ParserError, ParserWarning
 import pandas as pd
 import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
-from typing import  bytes,List, Dict, Union
+from typing import  List, Dict, Union
 logins=pd.read_csv('other/credentials/logins.csv')
 
 def setup_logger():
