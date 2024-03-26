@@ -1,15 +1,15 @@
 import itertools
+import hashlib
+import streamlit as st
+
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
 from langchain.chains import ConversationalRetrievalChain
-import streamlit as st
-import hashlib
-from util_funcs import text_to_docs,parse_uploaded_file
+from util_funcs import text_to_docs, parse_uploaded_file
 from langchain.chat_models import ChatOpenAI
-from langchain.callbacks import get_openai_callback,StreamlitCallbackHandler
-
+from langchain.callbacks import get_openai_callback, StreamlitCallbackHandler
 # initialize the LLM
 #if vectordb not in st.session_state:
        # st.session_state.vectordb={}
@@ -92,19 +92,6 @@ def generate_answer(prompt,files):
         # parsing the uploaded files
     try:
         parsed_files=[parse_uploaded_file(f)for f in files]
-        #
-        #file_names=
-        # mash the file names into one string
-        #file_names_string="".join([f.name for f in files])
-        # make sure its in unicode
-        #encoded_string = file_names_string.encode('utf-8')
-        # create a hash object
-        #hash_object=hashlib.blake2s()
-        # pass the string 
-        #hash_object.update(encoded_string)
-        #hashed_string = hash_object.hexdigest()
-        #save the hash as file name
-        #st.session_state.file_name=hashed_string
 
         
     except:
