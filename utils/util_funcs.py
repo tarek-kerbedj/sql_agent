@@ -14,8 +14,11 @@ from pandas.errors import ParserError, ParserWarning
 import pandas as pd
 import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
-from typing import  List, Dict, Union
-logins=pd.read_csv('other/credentials/logins.csv')
+from typing import List, Dict, Union
+logins_path = os.path.join('other', 'credentials', 'logins.csv')
+
+logins = pd.read_csv(logins_path)
+
 
 def setup_logger():
     """this function initializes a logger and adds the azure handler so the logs can be streamlined to Application insights
@@ -30,25 +33,24 @@ def setup_logger():
         logger.setLevel(logging.INFO)
     return logger
 
+
 def documents_config(files):
-    """ this function restarts the chat history  and the uploaded files in the session state"""
-    st.session_state.chat_his=[]
+    """Restart chat history and uploaded files in the session state."""
+    st.session_state.chat_his = []
+    st.session_state.uploaded_files = files
 
-    st.session_state.uploaded_files=files
 
-def login_config(login):
-    """checks if login exists and extracts the associated role"""
-    if (login!="") and login in logins['Name'].values:
-
-        st.session_state['user']=login
-        st.session_state['user_type']=logins[logins['Name']==login]['Function'].values[0]
-        #st.success(f"Successful authentication for {st.session_state['user']}")
+def login_config(login: str) -> None:
+    """Check if login exists and extracts the associated role."""
+    if login and login in logins['Name'].values:
+        st.session_state['user'] = login
+        st.session_state['user_type'] = logins[logins['Name'] == login]['Function'].values[0]
     else:
         st.warning('Please insert an authorized username')
-        st.session_state['user']=None
+        st.session_state['user'] = None
         st.stop()
 
-def load_config():
+def load_config()->None:
     """this function initializes session states for the different variables that are used in the app such as the log , source etc...
     parameters:
         None
@@ -215,21 +217,19 @@ def chat_history_download(history:List[Tuple[str, str]])-> bytes:
 
     return pdf_content
 @st.cache_data
-def parse_csv(file):
-    
-    """this function will parse uploaded csv file"""
+def parse_csv(file: io.BytesIO) -> pd.DataFrame:
+    """Parse uploaded CSV file."""
     stringio = StringIO(file.getvalue().decode("utf-8"))
     try:
-
         df = pd.read_csv(stringio)
-    except ParserError as e:
+    except ParserError:
         st.error('Error Parsing the csv file')
     try:
         stringed_data=df.to_string()
     except:
         st.error('Error converting the dataframe to a string')
     return stringed_data
-def check_csv_files(file_list):
+def check_csv_files(file_list:List[io.BytesIO])->bool():
     """Check if all files in the list are CSV files"""
     for file in file_list:
         _, file_extension = os.path.splitext(file.name)
@@ -238,7 +238,7 @@ def check_csv_files(file_list):
     return True
 
 @st.cache_data
-def parse_txt(file):
+def parse_txt(file:io.BytesIO)->str:
     """this function will parse the uploaded text file
             Parameters:
                 file(UploadedFile) : this represents the uploaded document
@@ -249,6 +249,7 @@ def parse_txt(file):
     text = re.sub(r"\n\s*\n", "\n\n", text)
     return text
 
+
 @st.cache_data
 def parse_uploaded_file(file):
     """ this function parses the file depending on the format"""
@@ -257,10 +258,11 @@ def parse_uploaded_file(file):
     elif file.name.endswith('.docx'):
         parsed_files = parse_docx(file)
     elif file.name.endswith('.txt'):
-        parsed_files=parse_txt(file)
+        parsed_files = parse_txt(file)
     else:
-        parsed_files=parse_csv(file)
+        parsed_files = parse_csv(file)
     return parsed_files
+
 
 @st.cache_data
 def parse_pdf(file):
@@ -283,8 +285,9 @@ def parse_pdf(file):
         output.append(text)
     return output
 
+
 @st.cache_data
-def parse_docx(file):
+def parse_docx(file:io.BytesIO)->List[str]:
     """this function will parse the Word document
             Parameters:
                 file(UploadedFile) : this represents the uploaded document
@@ -295,6 +298,7 @@ def parse_docx(file):
     # Remove multiple newlines
     text = re.sub(r"\n\s*\n", "\n\n", text)
     return [text]
+
 
 @st.cache_data
 def text_to_docs(text :Union[str, List[str]])->List[Document]:

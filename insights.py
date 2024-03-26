@@ -19,7 +19,8 @@ logger = setup_logger()
 # initialize the different session state variables
 load_config()
 # style elements including the logo and header
-header("other/images/forward_lane_icon.png", "Emerge")
+logo_path = os.path.join('other', 'images', 'logo.png')
+header(logo_path, "Emerge")
 button_prompts = [
     "**Client insights** \n\n query your database for insights",
     "**Research synthesis** \n\n analyze and interact with your documents",
@@ -27,12 +28,11 @@ button_prompts = [
 ]
 col1, col2, col3 = st.columns([1, 1, 1])
 with col1:
-    button1 = st.button(button_prompts[0])
+    client_insights_button = st.button(button_prompts[0])
 with col2:
-    button2 = st.button(button_prompts[1])
-
+    research_synthesis_button = st.button(button_prompts[1])
 with col3:
-    button3 = st.button(button_prompts[2])
+    signal_generation_button = st.button(button_prompts[2])
 
 login = st.text_input("Insert a username")
 
@@ -47,7 +47,7 @@ if st.session_state["log"] != [] and login in ["Tarek", "Roland"]:
     )
 
     # if there are uploaded documents, let the user specify the source
-if button1:
+if client_insights_button:
     st.session_state["source"] = "Database Insights"
 
     # documents_config(files)
@@ -55,10 +55,10 @@ if button1:
     # if there are uploaded documents, let the user specify the source
 
 
-elif button2:
+elif research_synthesis_button:
     st.session_state["source"] = "Document Q&A (pdf, docx, txt, csv - upto 3)"
 
-elif button3:
+elif signal_generation_button:
     st.session_state["source"] = "Signal Generator (xlsx)"
 # login process
 login_config(login)

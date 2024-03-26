@@ -40,7 +40,8 @@ def load_yaml() -> Dict:
     Returns:
         dict: A Python dictionary containing the contents of the YAML file.
     """
-    with open(f'other/prompts/prompts.yaml','r') as f:
+    prompt_path=os.path.join('other', 'credentials', 'prompts.yaml')
+    with open(prompt_path,'r') as f:
         output = yaml.safe_load(f)
         return output
 output=load_yaml()
