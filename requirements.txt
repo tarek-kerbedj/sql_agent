@@ -1,4 +1,5 @@
-langchain==0.0.231
+langchain==0.0.295
+langchain_experimental
 streamlit==1.24.0
 altair==4.0
 plotly==5.7.0
@@ -8,6 +9,15 @@ pypdf==3.9.0
 openai
 tiktoken
 chromadb==0.3.29
+faiss-cpu==1.7.4
 psycopg2-binary
 openpyxl
 pyyaml
+opencensus-ext-azure
+transformers
+pandas==2.0.1
+cassandra-driver==3.28.0
+cassio==0.1.1
+./other/wheels/boto3-1.28.21-py3-none-any.whl
+./other/wheels/botocore-1.31.21-py3-none-any.whl
+
